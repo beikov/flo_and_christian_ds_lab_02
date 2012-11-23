@@ -11,11 +11,14 @@ public class Auction implements Cloneable, Serializable {
 	private final String description;
 	private final String user;
 	private final Calendar endTimestamp;
+	private final Calendar beginTimestamp;
+	
 	private BigDecimal bidValue = BigDecimal.ZERO;
 	private String bidUser;
 
 	public Auction(long id, String description, String user,
 			Calendar endTimestamp) {
+		this.beginTimestamp = Calendar.getInstance();
 		this.id = id;
 		this.description = description;
 		this.user = user;
@@ -52,6 +55,10 @@ public class Auction implements Cloneable, Serializable {
 
 	public void setBidUser(String bidUser) {
 		this.bidUser = bidUser;
+	}
+	
+	public Calendar getBeginTimestamp() {
+		return beginTimestamp;
 	}
 
 	@Override
