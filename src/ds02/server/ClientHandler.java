@@ -1,17 +1,18 @@
 package ds02.server;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import ds02.server.command.BidCommand;
 import ds02.server.command.Command;
 import ds02.server.command.CreateCommand;
 import ds02.server.command.ListCommand;
 import ds02.server.command.LoginCommand;
 import ds02.server.command.LogoutCommand;
-import ds02.server.event.CloseEvent;
 import ds02.server.event.EventHandler;
+import ds02.server.event.UserEvent;
 import ds02.server.service.BidService;
 import ds02.server.service.UserService;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ClientHandler implements Runnable {
 
@@ -37,9 +38,9 @@ public class ClientHandler implements Runnable {
 
     public ClientHandler(final UserConnection userConnection) {
         this.userConnection = userConnection;
-        this.userConnection.addCloseListener(new EventHandler<CloseEvent>() {
+        this.userConnection.addCloseListener(new EventHandler<UserEvent>() {
             @Override
-            public void handle(CloseEvent event) {
+            public void handle(UserEvent event) {
 				/*
 				  We do the logout here directly so we don't have to pass anything to the logout command
 				  that would supress the response.

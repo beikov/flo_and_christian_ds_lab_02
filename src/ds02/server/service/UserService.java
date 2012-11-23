@@ -1,8 +1,9 @@
 package ds02.server.service;
 
-import ds02.server.UserConnection;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import ds02.server.UserConnection;
 
 public class UserService {
     

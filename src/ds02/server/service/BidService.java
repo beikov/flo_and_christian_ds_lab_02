@@ -1,42 +1,38 @@
 package ds02.server.service;
 
-import ds02.server.event.AuctionEndedEvent;
-import ds02.server.event.EventHandler;
-import ds02.server.event.NewBidEvent;
-import ds02.server.model.Auction;
-import ds02.server.util.AuctionRemoveTask;
-import ds02.server.util.TimedTask;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+
+import ds02.server.event.AuctionEndedEvent;
+import ds02.server.event.BidOverbidEvent;
+import ds02.server.event.EventHandler;
+import ds02.server.model.Auction;
+import ds02.server.util.AuctionRemoveTask;
+import ds02.server.util.TimedTask;
 
 public class BidService {
 
 	public static final BidService INSTANCE = new BidService();
 	public static final AuctionRemoveTask REMOVE_TASK = new AuctionRemoveTask();
 
-	private final AtomicInteger currentId = new AtomicInteger(0);
-	private final ConcurrentMap<Integer, Auction> auctions = new ConcurrentHashMap<Integer, Auction>();
-	private transient EventHandler<NewBidEvent> overbidHandler = null;
+	private final AtomicLong currentId = new AtomicLong(0);
+	private final ConcurrentMap<Long, Auction> auctions = new ConcurrentHashMap<Long, Auction>();
+	private transient EventHandler<BidOverbidEvent> overbidHandler = null;
 	private transient EventHandler<AuctionEndedEvent> auctionEndHandler = null;
 
 	private BidService() {
 	}
 
-	public EventHandler<NewBidEvent> getOverbidHandler() {
+	public EventHandler<BidOverbidEvent> getOverbidHandler() {
 		return overbidHandler;
 	}
 
-	public void setOverbidHandler(EventHandler<NewBidEvent> overbidHandler) {
+	public void setOverbidHandler(EventHandler<BidOverbidEvent> overbidHandler) {
 		this.overbidHandler = overbidHandler;
 	}
 
@@ -60,6 +56,15 @@ public class BidService {
 		return list;
 	}
 
+	public Auction getAuction(long auctionId) {
+		final Auction auction = auctions.get(auctionId);
+		if (auction != null) {
+			return auction.clone();
+		}
+		return null;
+
+	}
+
 	public Auction createAuction(String user, Integer duration,
 			String description) {
 		if (user == null || user.isEmpty()) {
@@ -76,7 +81,7 @@ public class BidService {
 
 		final Calendar end = Calendar.getInstance();
 		end.add(Calendar.SECOND, duration);
-		final int id = currentId.incrementAndGet();
+		final long id = currentId.incrementAndGet();
 
 		final Auction auction = new Auction(id, description, user, end);
 
@@ -91,7 +96,7 @@ public class BidService {
 
 					if (auction != null) {
 						synchronized (auction) {
-							handler.handle(new AuctionEndedEvent(auction));
+							handler.handle(new AuctionEndedEvent(id));
 						}
 
 					}
@@ -119,7 +124,6 @@ public class BidService {
 
 		final Auction auction = auctions.get(id);
 
-
 		if (auction == null) {
 			throw new IllegalArgumentException("Auction for id " + id
 					+ " does not exist");
@@ -143,10 +147,11 @@ public class BidService {
 
 		if (overbidUser != null) {
 			/* Notify the user who has been overbidden */
-			final EventHandler<NewBidEvent> handler = overbidHandler;
+			final EventHandler<BidOverbidEvent> handler = overbidHandler;
 
 			if (handler != null) {
-				handler.handle(new NewBidEvent(overbidUser, result));
+				handler.handle(new BidOverbidEvent(overbidUser, result.getId(),
+						amount.doubleValue()));
 			}
 		}
 

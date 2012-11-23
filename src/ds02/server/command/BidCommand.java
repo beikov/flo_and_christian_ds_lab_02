@@ -1,10 +1,11 @@
 package ds02.server.command;
 
+import java.math.BigDecimal;
+
 import ds02.server.UserConnection;
 import ds02.server.model.Auction;
 import ds02.server.service.BidService;
 import ds02.server.util.Formats;
-import java.math.BigDecimal;
 
 public class BidCommand implements Command{
     

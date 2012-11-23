@@ -1,16 +1,10 @@
 package ds02.server.event;
 
-import ds02.server.model.Auction;
 
-public class AuctionEndedEvent {
-    
-    private final Auction auction;
-    
-    public AuctionEndedEvent(Auction auction) {
-        this.auction = auction;
-    }
+public class AuctionEndedEvent extends AuctionEvent {
 
-    public Auction getAuction() {
-        return auction;
-    }
+	public AuctionEndedEvent(long auctionId) {
+		super("AUCTION_ENDED", auctionId);
+	}
+    
 }

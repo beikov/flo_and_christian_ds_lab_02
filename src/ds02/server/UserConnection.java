@@ -1,20 +1,21 @@
 package ds02.server;
 
-import ds02.server.event.CloseEvent;
-import ds02.server.event.EventBus;
-import ds02.server.event.EventHandler;
-import ds02.server.event.LogoutEvent;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.Date;
+import java.util.UUID;
+
+import ds02.server.event.DisconnectedEvent;
+import ds02.server.event.EventBus;
+import ds02.server.event.EventHandler;
+import ds02.server.event.LogoutEvent;
+import ds02.server.event.UserEvent;
 
 public class UserConnection {
 
-    private final EventBus<CloseEvent> onClose;
+    private final EventBus<UserEvent> onClose;
     private final EventBus<LogoutEvent> onLogout;
     private final Socket tcpSocket;
     private final BufferedReader tcpReader;
@@ -22,7 +23,7 @@ public class UserConnection {
     private String username;
 
     public UserConnection(Socket tcpSocket) {
-        this.onClose = new EventBus<CloseEvent>();
+        this.onClose = new EventBus<UserEvent>();
         this.onLogout = new EventBus<LogoutEvent>();
         this.tcpSocket = tcpSocket;
 
@@ -78,9 +79,9 @@ public class UserConnection {
             this.username = username;
 
             /* Make sure the user is logged out when the connection is closed */
-            addCloseListener(new EventHandler<CloseEvent>() {
+            addCloseListener(new EventHandler<UserEvent>() {
                 @Override
-                public void handle(CloseEvent event) {
+                public void handle(UserEvent event) {
                     UserConnection.this.logout();
                 }
             });
@@ -122,7 +123,7 @@ public class UserConnection {
         onLogout.addHandler(handler);
     }
 
-    public void addCloseListener(EventHandler<CloseEvent> handler) {
+    public void addCloseListener(EventHandler<UserEvent> handler) {
         onClose.addHandler(handler);
     }
 
@@ -132,7 +133,7 @@ public class UserConnection {
 
             if (username != null) {
                 try {
-                    onClose.notify(new CloseEvent(username));
+                    onClose.notify(new DisconnectedEvent(username));
                 } catch (Throwable ex) {
                     t = ex;
                 }

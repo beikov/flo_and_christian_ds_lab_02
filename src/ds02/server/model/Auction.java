@@ -4,21 +4,21 @@ import java.math.BigDecimal;
 import java.util.Calendar;
 
 public class Auction implements Cloneable{
-    private final int id;
+    private final long id;
     private final String description;
     private final String user;
     private final Calendar endTimestamp;
     private BigDecimal bidValue = BigDecimal.ZERO;
     private String bidUser;
 
-    public Auction(int id, String description, String user, Calendar endTimestamp) {
+    public Auction(long id, String description, String user, Calendar endTimestamp) {
         this.id = id;
         this.description = description;
         this.user = user;
         this.endTimestamp = endTimestamp;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -61,25 +61,27 @@ public class Auction implements Cloneable{
         }
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 23 * hash + this.id;
-        return hash;
-    }
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (id ^ (id >>> 32));
+		return result;
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Auction other = (Auction) obj;
-        if (this.id != other.id) {
-            return false;
-        }
-        return true;
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Auction other = (Auction) obj;
+		if (id != other.id)
+			return false;
+		return true;
+	}
+
+    
 }

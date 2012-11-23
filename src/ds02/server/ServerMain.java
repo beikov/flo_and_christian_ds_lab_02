@@ -1,12 +1,5 @@
 package ds02.server;
 
-import ds02.server.event.CloseEvent;
-import ds02.server.event.EventHandler;
-import ds02.server.event.handler.AuctionEndedHandler;
-import ds02.server.event.handler.NewBidHandler;
-import ds02.server.service.BidService;
-import ds02.server.util.AuctionRemoveTask;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
@@ -14,10 +7,15 @@ import java.net.ServerSocket;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import ds02.server.event.EventHandler;
+import ds02.server.event.UserEvent;
+import ds02.server.event.handler.AuctionEndedHandler;
+import ds02.server.event.handler.BidOverBidHandler;
+import ds02.server.service.BidService;
 
 public class ServerMain {
 
@@ -65,7 +63,7 @@ public class ServerMain {
         final Map<ClientHandler, Object> clientHandlers = new ConcurrentHashMap<ClientHandler, Object>();
 
         BidService.INSTANCE.setAuctionEndHandler(new AuctionEndedHandler());
-        BidService.INSTANCE.setOverbidHandler(new NewBidHandler());
+		BidService.INSTANCE.setOverbidHandler(new BidOverBidHandler());
 
         /* The thread for accepting connections */
         new Thread() {
@@ -75,10 +73,10 @@ public class ServerMain {
                     try {
                         final UserConnection connection = new UserConnection(serverSocket.accept());
                         final ClientHandler handler = new ClientHandler(connection);
-                        connection.addCloseListener(new EventHandler<CloseEvent>(){
+                        connection.addCloseListener(new EventHandler<UserEvent>(){
 
                             @Override
-                            public void handle(CloseEvent event) {
+                            public void handle(UserEvent event) {
                                 clientHandlers.remove(handler);
                             }
                             
