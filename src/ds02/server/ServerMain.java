@@ -5,12 +5,16 @@ import ds02.server.event.EventHandler;
 import ds02.server.event.handler.AuctionEndedHandler;
 import ds02.server.event.handler.NewBidHandler;
 import ds02.server.service.BidService;
+import ds02.server.util.AuctionRemoveTask;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -51,6 +55,12 @@ public class ServerMain {
         }
 
         final ExecutorService threadPool = Executors.newFixedThreadPool(THREADS);
+        
+        /* starts garbage collection */
+        final Timer timer = new Timer();
+        
+        timer.scheduleAtFixedRate(BidService.REMOVE_TASK, 0, 1000);
+        
         /* We use concurrent hash map for performance and because there is no ConcurrentHashSet */
         final Map<ClientHandler, Object> clientHandlers = new ConcurrentHashMap<ClientHandler, Object>();
 
@@ -109,7 +119,7 @@ public class ServerMain {
                     iter.remove();
                 }
                 
-                BidService.INSTANCE.cancelAuctions();
+                BidService.REMOVE_TASK.cancel();
             }
         };
         

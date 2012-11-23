@@ -28,13 +28,13 @@ public class AuctionEndedHandler implements EventHandler<AuctionEndedEvent> {
         sb.append(event.getAuction().getDescription());
         response = sb.toString();
         
-        if(ownerUserConnection != null){
-            ownerUserConnection.asyncResponse(response);
-        }
-        
-        if(bidUserConnection != null && !bidUserConnection.equals(ownerUserConnection)){
-            bidUserConnection.asyncResponse(response);
-        }
+//        if(ownerUserConnection != null){
+//            ownerUserConnection.asyncResponse(response);
+//        }
+//        
+//        if(bidUserConnection != null && !bidUserConnection.equals(ownerUserConnection)){
+//            bidUserConnection.asyncResponse(response);
+//        }
     }
     
 }

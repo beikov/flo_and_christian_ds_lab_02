@@ -20,7 +20,6 @@ public class UserConnection {
     private final BufferedReader tcpReader;
     private final ObjectOutputStream tcpWriter;
     private String username;
-    private DatagramSocket udpSocket;
 
     public UserConnection(Socket tcpSocket) {
         this.onClose = new EventBus<CloseEvent>();
@@ -64,39 +63,18 @@ public class UserConnection {
         return username;
     }
 
-    public void asyncResponse(String response) {
-        if (!isLoggedIn()) {
-            throw new IllegalStateException("Not logged in");
-        }
-        
-        try {
-            final byte[] bytes = response.getBytes();
-            final DatagramPacket packet = new DatagramPacket(bytes, bytes.length);
-            udpSocket.send(packet);
-        } catch (Exception ex) {
-            // Don't care about the errors since logging is not required
-            // if(!udpSocket.isClosed()){
-            //     ex.printStackTrace(System.err);
-            // }
-        }
-    }
-
-    public void login(String username, Integer udpPort) {
+  
+    public void login(String username) {
         if(username == null || username.isEmpty()){
             throw new IllegalArgumentException("Invalid username");
         }
         
-        if(udpPort == null || udpPort < 1){
-            throw new IllegalArgumentException("Invalid udp port");
-        }
-        
+      
         if (isLoggedIn()) {
             throw new IllegalStateException("Already logged in");
         }
 
         try {
-            this.udpSocket = new DatagramSocket();
-            this.udpSocket.connect(new InetSocketAddress(tcpSocket.getInetAddress(), udpPort));
             this.username = username;
 
             /* Make sure the user is logged out when the connection is closed */
@@ -124,16 +102,6 @@ public class UserConnection {
             /* Always remove the handlers, otherwise we will create a memory leak */
             onLogout.removeHandlers();
             username = null;
-
-            if (udpSocket != null && !udpSocket.isClosed()) {
-                try {
-                    udpSocket.close();
-                } catch (Exception ex) {
-                    // Ignore
-                }
-            }
-
-            udpSocket = null;
 
             if (t != null) {
                 /* Checked exceptions are not possible */

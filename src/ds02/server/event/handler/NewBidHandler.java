@@ -16,7 +16,7 @@ public class NewBidHandler implements EventHandler<NewBidEvent> {
             final StringBuilder sb = new StringBuilder();
             sb.append("!new-bid ").append(event.getAuction().getDescription());
             
-            userConnection.asyncResponse(sb.toString());
+//            userConnection.asyncResponse(sb.toString());
         }
     }
     

@@ -13,23 +13,19 @@ public class ClientMain {
         final BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         /* Socket connection to server */
         final Socket socket;
-        /* Runnable for async notification receive */
-        final NotificationHandler notificationHandler;
         /* Using this one since we might have multiline responses */
         final ObjectInputStream socketReader;
         final BufferedWriter socketWriter;
 
-        if (args.length != 3) {
+        if (args.length != 2) {
             usage();
         }
 
         String host = args[0];
         int tcpPort = 0;
-        int udpPort = 0;
-
+        
         try {
             tcpPort = Integer.parseInt(args[1]);
-            udpPort = Integer.parseInt(args[2]);
         } catch (NumberFormatException ex) {
             ex.printStackTrace(System.err);
             usage();
@@ -43,7 +39,6 @@ public class ClientMain {
             throw new RuntimeException("Could not connect to server", ex);
         }
         
-        notificationHandler = new NotificationHandler(udpPort);
 
         String user = null;
         String command;
@@ -72,15 +67,10 @@ public class ClientMain {
                     if(commandParts.length < 2){
                         socketWriter.write(' ');
                     }
-                    /* We add the udp port to the login message */
-                    socketWriter.write(' ');
-                    socketWriter.write("" + udpPort);
 
                     if (user == null && commandParts.length > 1) {
                         /* Extract user name out of the command so we can show it in the prompt and also start the notification handler */
                         user = commandParts[1];
-                        notificationHandler.setUser(user);
-                        new Thread(notificationHandler).start();
                     }
                 }
                 
@@ -97,7 +87,6 @@ public class ClientMain {
                     /* Here we have either a logout or an unsuccessful login */
                     user = null;
                     prompt = "> ";
-                    notificationHandler.stop();
                 } else if (user != null) {
                     /* Successful login */
                     prompt = user + "> ";
@@ -124,7 +113,6 @@ public class ClientMain {
                     }
                 }
 
-                notificationHandler.stop();
             }
         };
         
@@ -134,7 +122,7 @@ public class ClientMain {
     }
 
     private static void usage() {
-        System.out.println("Usage: " + ClientMain.class.getSimpleName() + " <host> <tcpPort> <udpPort>");
+        System.out.println("Usage: " + ClientMain.class.getSimpleName() + " <host> <tcpPort>");
         System.exit(1);
     }
 
