@@ -1,20 +1,20 @@
 package ds02.server.model;
 
 import java.io.Serializable;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 public class PriceSteps implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
-	private Set<PriceStep> priceSteps = new TreeSet<PriceStep>();
-
-	public Set<PriceStep> getPriceSteps() {
-		return priceSteps;
+	private final Collection<PriceStep> priceSteps;
+	
+	public PriceSteps(Collection<PriceStep> priceSteps) {
+		this.priceSteps = Collections.unmodifiableList(new ArrayList<PriceStep>(priceSteps));
 	}
 
-	public void setPriceSteps(Set<PriceStep> priceSteps) {
-		this.priceSteps = priceSteps;
+	public Collection<PriceStep> getPriceSteps() {
+		return priceSteps;
 	}
 }

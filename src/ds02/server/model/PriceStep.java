@@ -2,7 +2,7 @@ package ds02.server.model;
 
 import java.io.Serializable;
 
-public class PriceStep implements Serializable {
+public class PriceStep implements Serializable, Comparable<PriceStep> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -34,6 +34,25 @@ public class PriceStep implements Serializable {
 
 	public double getVariablePricePercent() {
 		return variablePricePercent;
+	}
+
+	@Override
+	public int compareTo(PriceStep priceStep) {
+		if(this.startPrice > priceStep.startPrice){
+			if(this.startPrice < priceStep.endPrice){
+				throw new IllegalArgumentException("Overlapping price steps");
+			} else {
+				return 1;
+			}
+		} else if(this.startPrice < priceStep.startPrice){
+			if(this.endPrice > priceStep.startPrice){
+				throw new IllegalArgumentException("Overlapping price steps");
+			} else {
+				return -1;
+			}
+		}
+		
+		return 0;
 	}
 
 	@Override

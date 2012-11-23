@@ -1,6 +1,5 @@
 package ds02.server.util;
 
-import java.io.InputStream;
 import java.rmi.Remote;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -37,30 +36,14 @@ public final class RegistryUtils {
 	}
 	
 		public static Registry getRegistry() {
-			InputStream is = ClassLoader.getSystemResourceAsStream("registry.properties");;
-			
-			if(is == null) {
-				LOG.error("Properties file not found!");
-				return null;
-			}
-			
 			try {
-				Properties p = new Properties();
-				p.load(is);
+				Properties p = PropertiesUtils.getProperties("registry.properties");
 				final String host = p.getProperty("registry.host", "localhost");
 				final int port = Integer.parseInt(p.getProperty("registry.port", "1099"));
 				
 				return LocateRegistry.getRegistry(host, port);
 			} catch (Exception e) {
 				LOG.error("Could not locate Registry!", e);
-			} finally {
-				if(is != null) {
-					try {
-						is.close();
-					} catch (Exception s) {
-						//IGNORE
-					}
-				}
 			}
 			
 			return null;

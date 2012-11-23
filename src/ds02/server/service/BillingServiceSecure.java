@@ -17,7 +17,7 @@ public interface BillingServiceSecure extends Remote, Serializable {
 	public void deletePriceStep(double startPrice, double endPrice)
 			throws RemoteException;
 
-	public String billAuction(String user, long auctionId, double price)
+	public void billAuction(String user, long auctionId, double price)
 			throws RemoteException;
 
 	public Bill getBill(String user) throws RemoteException;
