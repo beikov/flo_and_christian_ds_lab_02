@@ -28,9 +28,11 @@ public class ClientHandler implements Runnable {
 
 		loggedOutCommandMap.put("!login", loginCommand);
 		loggedOutCommandMap.put("!logout", logoutCommand);
+		loggedOutCommandMap.put("!list", new ListCommand(AuctionService.INSTANCE));
 
 		loggedInCommandMap.put("!login", loginCommand);
 		loggedInCommandMap.put("!logout", logoutCommand);
+
 		loggedInCommandMap.put("!list", new ListCommand(AuctionService.INSTANCE));
 		loggedInCommandMap.put("!create",
 				new CreateCommand(AuctionService.INSTANCE));
