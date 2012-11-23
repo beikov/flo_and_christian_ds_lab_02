@@ -9,16 +9,18 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import ds02.server.event.AuctionEndedEvent;
+import ds02.server.event.AuctionStartedEvent;
 import ds02.server.event.BidOverbidEvent;
+import ds02.server.event.BidPlacedEvent;
 import ds02.server.event.Event;
 import ds02.server.event.EventHandler;
 import ds02.server.event.handler.AuctionEndedEventHandler;
 import ds02.server.event.handler.DefaultEventHandler;
 import ds02.server.model.Auction;
-import ds02.server.service.BidService;
+import ds02.server.service.AuctionService;
 import ds02.server.util.TimedTask;
 
-public class BidServiceImpl implements BidService {
+public class AuctionServiceImpl implements AuctionService {
 
 	private static final long serialVersionUID = 1L;
 	private final AtomicLong currentId = new AtomicLong(0);
@@ -105,7 +107,7 @@ public class BidServiceImpl implements BidService {
 		});
 
 		auctions.put(id, auction);
-
+		DefaultEventHandler.INSTANCE.handle(new AuctionStartedEvent(id));
 		return auction;
 	}
 
@@ -140,7 +142,7 @@ public class BidServiceImpl implements BidService {
 
 		final Auction result;
 		String overbidUser = null;
-
+		
 		synchronized (auction) {
 			result = auction.clone();
 
@@ -152,6 +154,8 @@ public class BidServiceImpl implements BidService {
 			}
 		}
 
+		DefaultEventHandler.INSTANCE.handle(new BidPlacedEvent(user, id, amount.doubleValue()));
+		
 		if (overbidUser != null) {
 			/* Notify the user who has been overbidden */
 			final EventHandler<Event> handler = overbidHandler;

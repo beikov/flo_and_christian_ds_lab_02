@@ -17,16 +17,10 @@ public class AtomicDouble {
 		return Double.longBitsToDouble(longValue.get());
 	}
 	
-	public double getAndAdd(double delta){
-		while(true){
-			long current = longValue.get();
-			double currentVal = Double.longBitsToDouble(current);
-			double nextVal = currentVal + delta;
-			long next = Double.doubleToRawLongBits(nextVal);
-			
-			if (longValue.compareAndSet(current, next)){
-				return nextVal;
-			}
-		}
+	public boolean compareAndSet(double original, double newValue){
+			long current = Double.doubleToRawLongBits(original);
+			long next = Double.doubleToRawLongBits(newValue);
+			return (longValue.compareAndSet(current, next));
 	}
+	
 }

@@ -5,12 +5,12 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import ds02.server.model.Auction;
-import ds02.server.service.impl.BidServiceImpl;
+import ds02.server.service.impl.AuctionServiceImpl;
 import ds02.server.util.AuctionRemoveTask;
 
-public interface BidService extends Serializable {
+public interface AuctionService extends Serializable {
 
-	public static final BidService INSTANCE = new BidServiceImpl();
+	public static final AuctionService INSTANCE = new AuctionServiceImpl();
 	public static final AuctionRemoveTask REMOVE_TASK = new AuctionRemoveTask();
 
 	public List<Auction> getAuctions();

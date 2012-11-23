@@ -9,11 +9,11 @@ import ds02.server.event.DisconnectedEvent;
 import ds02.server.event.EventBus;
 import ds02.server.event.EventHandler;
 import ds02.server.event.LogoutEvent;
-import ds02.server.event.UserEvent;
+import ds02.server.event.handler.DefaultEventHandler;
 
 public class UserConnection {
 
-	private final EventBus<UserEvent> onClose;
+	private final EventBus<DisconnectedEvent> onClose;
 	private final EventBus<LogoutEvent> onLogout;
 	private final Socket tcpSocket;
 	private final BufferedReader tcpReader;
@@ -21,7 +21,7 @@ public class UserConnection {
 	private String username;
 
 	public UserConnection(Socket tcpSocket) {
-		this.onClose = new EventBus<UserEvent>();
+		this.onClose = new EventBus<DisconnectedEvent>();
 		this.onLogout = new EventBus<LogoutEvent>();
 		this.tcpSocket = tcpSocket;
 
@@ -63,7 +63,7 @@ public class UserConnection {
 		return username;
 	}
 
-	public void login(String username) {
+	public void login(final String username) {
 		if (username == null || username.isEmpty()) {
 			throw new IllegalArgumentException("Invalid username");
 		}
@@ -76,10 +76,11 @@ public class UserConnection {
 			this.username = username;
 
 			/* Make sure the user is logged out when the connection is closed */
-			addCloseListener(new EventHandler<UserEvent>() {
+			addCloseListener(new EventHandler<DisconnectedEvent>() {
 				@Override
-				public void handle(UserEvent event) {
+				public void handle(DisconnectedEvent event) {
 					UserConnection.this.logout();
+					DefaultEventHandler.INSTANCE.handle(event);
 				}
 			});
 		} catch (Exception ex) {
@@ -124,7 +125,7 @@ public class UserConnection {
 		onLogout.addHandler(handler);
 	}
 
-	public void addCloseListener(EventHandler<UserEvent> handler) {
+	public void addCloseListener(EventHandler<DisconnectedEvent> handler) {
 		onClose.addHandler(handler);
 	}
 

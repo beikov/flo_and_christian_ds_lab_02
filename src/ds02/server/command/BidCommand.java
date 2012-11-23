@@ -4,14 +4,14 @@ import java.math.BigDecimal;
 
 import ds02.server.UserConnection;
 import ds02.server.model.Auction;
-import ds02.server.service.BidService;
+import ds02.server.service.AuctionService;
 import ds02.server.util.Formats;
 
 public class BidCommand implements Command {
 
-	private final BidService bidService;
+	private final AuctionService bidService;
 
-	public BidCommand(BidService bidService) {
+	public BidCommand(AuctionService bidService) {
 		this.bidService = bidService;
 	}
 

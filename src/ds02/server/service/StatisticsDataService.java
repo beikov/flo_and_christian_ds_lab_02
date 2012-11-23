@@ -2,8 +2,6 @@ package ds02.server.service;
 
 import java.util.Date;
 
-import ds02.server.model.Auction;
-
 public interface StatisticsDataService {
 
 		public Date getServerStartTime();
@@ -12,15 +10,13 @@ public interface StatisticsDataService {
 		
 		public long getOverallAuctionTime();
 		
-		public double getOverallBidPrice();
-		
 		public long getTotalBidCount();
 		
 		public double getBidCountPerMinute();
 		
 		public long getLongestUserSessionTime();
 		
-		public long getShortestUserSessionTime();
+		public long getMinUserSessionTime();
 		
 		public double getAverageUserSessionTime();
 		
@@ -32,11 +28,19 @@ public interface StatisticsDataService {
 		
 		public double getAuctionSuccessRatio();
 		
-		public void addFinishedAuction(Auction auction);
+		public void addFinishedAuction(long auctionDuration);
 		
 		public void addUserSessionTime(long sessionTime);
 		
 		public void incrementBidCount();
 	
 		public void incrementSessionCount();
+
+		public void addBid(double bidAmount);
+
+		public double getMaxBidPrice();
+
+		public void incrementSuccessfullAuctions();
+
+		public double getAverageAuctionTime();
 }

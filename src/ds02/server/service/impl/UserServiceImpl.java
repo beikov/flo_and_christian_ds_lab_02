@@ -4,9 +4,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import ds02.server.UserConnection;
-import ds02.server.event.Event;
-import ds02.server.event.EventHandler;
 import ds02.server.event.LoginEvent;
+import ds02.server.event.LogoutEvent;
 import ds02.server.event.handler.DefaultEventHandler;
 import ds02.server.service.UserService;
 
@@ -14,7 +13,6 @@ public class UserServiceImpl implements UserService {
 
 	private static final long serialVersionUID = 1L;
 	private final ConcurrentMap<String, UserConnection> users = new ConcurrentHashMap<String, UserConnection>();
-	private transient EventHandler<Event> loginHandler = DefaultEventHandler.INSTANCE;
 
 	/*
 	 * (non-Javadoc)
@@ -38,7 +36,7 @@ public class UserServiceImpl implements UserService {
 		checkUsername(username);
 
 		if (users.putIfAbsent(username, userConnection) == null) {
-			loginHandler.handle(new LoginEvent(username));
+			DefaultEventHandler.INSTANCE.handle(new LoginEvent(username));
 			return true;
 		}
 		return false;
@@ -53,6 +51,7 @@ public class UserServiceImpl implements UserService {
 	public void logout(String username) {
 		checkUsername(username);
 		users.remove(username);
+		DefaultEventHandler.INSTANCE.handle(new LogoutEvent(username));
 	}
 
 	private static void checkUsername(String username) {

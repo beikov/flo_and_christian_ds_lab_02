@@ -9,9 +9,9 @@ import ds02.server.command.CreateCommand;
 import ds02.server.command.ListCommand;
 import ds02.server.command.LoginCommand;
 import ds02.server.command.LogoutCommand;
+import ds02.server.event.DisconnectedEvent;
 import ds02.server.event.EventHandler;
-import ds02.server.event.UserEvent;
-import ds02.server.service.BidService;
+import ds02.server.service.AuctionService;
 import ds02.server.service.UserService;
 
 public class ClientHandler implements Runnable {
@@ -31,17 +31,17 @@ public class ClientHandler implements Runnable {
 
 		loggedInCommandMap.put("!login", loginCommand);
 		loggedInCommandMap.put("!logout", logoutCommand);
-		loggedInCommandMap.put("!list", new ListCommand(BidService.INSTANCE));
+		loggedInCommandMap.put("!list", new ListCommand(AuctionService.INSTANCE));
 		loggedInCommandMap.put("!create",
-				new CreateCommand(BidService.INSTANCE));
-		loggedInCommandMap.put("!bid", new BidCommand(BidService.INSTANCE));
+				new CreateCommand(AuctionService.INSTANCE));
+		loggedInCommandMap.put("!bid", new BidCommand(AuctionService.INSTANCE));
 	}
 
 	public ClientHandler(final UserConnection userConnection) {
 		this.userConnection = userConnection;
-		this.userConnection.addCloseListener(new EventHandler<UserEvent>() {
+		this.userConnection.addCloseListener(new EventHandler<DisconnectedEvent>() {
 			@Override
-			public void handle(UserEvent event) {
+			public void handle(DisconnectedEvent event) {
 				/*
 				 * We do the logout here directly so we don't have to pass
 				 * anything to the logout command that would supress the

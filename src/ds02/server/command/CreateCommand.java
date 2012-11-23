@@ -2,14 +2,14 @@ package ds02.server.command;
 
 import ds02.server.UserConnection;
 import ds02.server.model.Auction;
-import ds02.server.service.BidService;
+import ds02.server.service.AuctionService;
 import ds02.server.util.Formats;
 
 public class CreateCommand implements Command {
 
-	private final BidService bidService;
+	private final AuctionService bidService;
 
-	public CreateCommand(BidService bidService) {
+	public CreateCommand(AuctionService bidService) {
 		this.bidService = bidService;
 	}
 

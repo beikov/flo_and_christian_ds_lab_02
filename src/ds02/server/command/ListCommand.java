@@ -4,14 +4,14 @@ import java.util.List;
 
 import ds02.server.UserConnection;
 import ds02.server.model.Auction;
-import ds02.server.service.BidService;
+import ds02.server.service.AuctionService;
 import ds02.server.util.Formats;
 
 public class ListCommand implements Command {
 
-	private final BidService bidService;
+	private final AuctionService bidService;
 
-	public ListCommand(BidService bidService) {
+	public ListCommand(AuctionService bidService) {
 		this.bidService = bidService;
 	}
 

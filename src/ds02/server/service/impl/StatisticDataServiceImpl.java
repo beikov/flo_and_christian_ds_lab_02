@@ -3,7 +3,6 @@ package ds02.server.service.impl;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;
 
-import ds02.server.model.Auction;
 import ds02.server.service.StatisticsDataService;
 import ds02.server.util.concurrent.AtomicDouble;
 
@@ -15,8 +14,7 @@ public class StatisticDataServiceImpl implements StatisticsDataService {
 	private final AtomicLong totalSuccessfullAuctions = new AtomicLong();
 	private final AtomicLong totalAuctionCount = new AtomicLong();
 	private final AtomicLong totalBidCount = new AtomicLong();
-	private final AtomicDouble totalBidPrice = new AtomicDouble();
-
+	private final AtomicDouble highestBid = new AtomicDouble();
 	private final AtomicLong minUserTime = new AtomicLong();
 	private final AtomicLong maxUserTime = new AtomicLong();
 
@@ -42,8 +40,8 @@ public class StatisticDataServiceImpl implements StatisticsDataService {
 	}
 
 	@Override
-	public double getOverallBidPrice() {
-		return totalBidPrice.get();
+	public double getMaxBidPrice() {
+		return highestBid.get();
 	}
 
 	@Override
@@ -63,7 +61,7 @@ public class StatisticDataServiceImpl implements StatisticsDataService {
 	}
 
 	@Override
-	public long getShortestUserSessionTime() {
+	public long getMinUserSessionTime() {
 		return minUserTime.get();
 	}
 
@@ -80,29 +78,40 @@ public class StatisticDataServiceImpl implements StatisticsDataService {
 
 	@Override
 	public double getAuctionSuccessRatio() {
-		return ((double) totalSuccessfullAuctions.get() / (double) totalAuctionCount.get());
+		return ((double) totalSuccessfullAuctions.get() / (double) totalAuctionCount
+				.get());
 	}
+
 	@Override
 	public long getOverallNumberOfFinishedAuction() {
 		return totalAuctionCount.get();
 	}
 
 	@Override
-	public long getOverallTimeOfUserSessions() {
-		return totalSessionTime.get();
+	public void addBid(double bidAmount) {
+		highestBid.compareAndSet(highestBid.get(), bidAmount);
 	}
 
 	@Override
-	public void addFinishedAuction(Auction auction) {
-		totalAuctionTime.addAndGet(auction.getEndTimestamp().getTimeInMillis()
-				- auction.getEndTimestamp().getTimeInMillis());
-		totalBidPrice.getAndAdd(auction.getBidValue().doubleValue());
-		totalAuctionCount.incrementAndGet();
-		if (auction.getBidValue().doubleValue() > 0) {
-			totalSuccessfullAuctions.incrementAndGet();
-		}
+	public long getOverallTimeOfUserSessions() {
+		return totalSessionTime.get();
+	}
+	
+	@Override
+	public double getAverageAuctionTime() {
+		return ((double)totalAuctionTime.get()/(double)totalAuctionCount.get());
 	}
 
+	@Override
+	public void addFinishedAuction(long auctionDuration) {
+		totalAuctionTime.addAndGet(auctionDuration);
+	}
+	
+	@Override
+	public void incrementSuccessfullAuctions() {
+		totalSuccessfullAuctions.incrementAndGet();
+	}
+	
 	@Override
 	public void addUserSessionTime(long sessionTime) {
 		// lock free :-)

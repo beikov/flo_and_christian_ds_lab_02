@@ -11,9 +11,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import ds02.server.event.DisconnectedEvent;
 import ds02.server.event.EventHandler;
-import ds02.server.event.UserEvent;
-import ds02.server.service.BidService;
+import ds02.server.service.AuctionService;
 
 public class ServerMain {
 
@@ -56,7 +56,7 @@ public class ServerMain {
 		/* starts garbage collection */
 		final Timer timer = new Timer();
 
-		timer.scheduleAtFixedRate(BidService.REMOVE_TASK, 0, 1000);
+		timer.scheduleAtFixedRate(AuctionService.REMOVE_TASK, 0, 1000);
 
 		/*
 		 * We use concurrent hash map for performance and because there is no
@@ -75,10 +75,10 @@ public class ServerMain {
 						final ClientHandler handler = new ClientHandler(
 								connection);
 						connection
-								.addCloseListener(new EventHandler<UserEvent>() {
+								.addCloseListener(new EventHandler<DisconnectedEvent>() {
 
 									@Override
-									public void handle(UserEvent event) {
+									public void handle(DisconnectedEvent event) {
 										clientHandlers.remove(handler);
 									}
 
@@ -121,7 +121,7 @@ public class ServerMain {
 					iter.remove();
 				}
 
-				BidService.REMOVE_TASK.cancel();
+				AuctionService.REMOVE_TASK.cancel();
 			}
 		};
 
