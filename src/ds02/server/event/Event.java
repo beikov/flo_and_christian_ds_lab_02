@@ -1,9 +1,10 @@
 package ds02.server.event;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
-public abstract class Event {
+public abstract class Event implements Serializable {
 	private final String id;
 	private final String type;
 	private final long timeStamp;

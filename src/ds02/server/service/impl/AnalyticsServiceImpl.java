@@ -1,12 +1,16 @@
 package ds02.server.service.impl;
 
+import java.io.PrintStream;
+import java.io.Serializable;
 import java.rmi.RemoteException;
 
 import ds02.server.event.Event;
 import ds02.server.event.EventHandler;
 import ds02.server.service.AnalyticsService;
 
-public class AnalyticsServiceImpl implements AnalyticsService {
+public class AnalyticsServiceImpl implements AnalyticsService, Serializable {
+
+	private static final PrintStream ps = System.out;
 
 	@Override
 	public String subscribe(String pattern, EventHandler<Event> handler)
@@ -17,8 +21,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
 
 	@Override
 	public void processEvent(Event event) throws RemoteException {
-		// TODO Auto-generated method stub
-
+		ps.println(event);
 	}
 
 	@Override

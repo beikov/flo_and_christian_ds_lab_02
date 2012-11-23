@@ -4,11 +4,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import ds02.server.UserConnection;
+import ds02.server.event.EventHandler;
+import ds02.server.event.LoginEvent;
+import ds02.server.event.handler.LoginEventHandler;
 
 public class UserService {
     
     public static final UserService INSTANCE = new UserService();
     private final ConcurrentMap<String, UserConnection> users = new ConcurrentHashMap<String, UserConnection>();
+    private transient EventHandler<LoginEvent> loginHandler = new LoginEventHandler();
     
     public UserConnection getUser(String username){
         checkUsername(username);
@@ -17,7 +21,12 @@ public class UserService {
     
     public boolean login(String username, UserConnection userConnection){
         checkUsername(username);
-        return users.putIfAbsent(username, userConnection) == null;
+        
+        if(users.putIfAbsent(username, userConnection) == null) {
+        	loginHandler.handle(new LoginEvent(username));
+        	return true;
+        }
+        return false;
     }
     
     public void logout(String username){

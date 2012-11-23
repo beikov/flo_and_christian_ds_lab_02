@@ -4,8 +4,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Date;
-import java.util.UUID;
 
 import ds02.server.event.DisconnectedEvent;
 import ds02.server.event.EventBus;

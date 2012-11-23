@@ -1,6 +1,7 @@
 package ds02.server;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.rmi.AccessException;
@@ -9,6 +10,7 @@ import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 
 import ds02.server.service.AnalyticsService;
 import ds02.server.service.impl.AnalyticsServiceImpl;
@@ -16,17 +18,19 @@ import ds02.server.service.impl.AnalyticsServiceImpl;
 public class AnalyticsServer {
 
 	public static void main(String[] args) {
+		//System.out.println(new File("").getAbsolutePath());
+		
+		
 		Registry registry = null;
 		try {
 			if (System.getSecurityManager() == null) {
-				System.setSecurityManager(new RMISecurityManager());
+				System.setSecurityManager(new SecurityManager());
 			}
 
+			AnalyticsService service = new AnalyticsServiceImpl();
+			AnalyticsService stub = (AnalyticsService) UnicastRemoteObject.exportObject(service, 0);
 			registry = LocateRegistry.createRegistry(1099);
-			registry.bind(AnalyticsService.class.getName(),
-					new AnalyticsServiceImpl());
-
-			// TODO Tune up
+			registry.bind(AnalyticsService.class.getName(), stub);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
