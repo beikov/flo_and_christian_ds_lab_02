@@ -1,65 +1,69 @@
 package ds02.server.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Calendar;
 
-public class Auction implements Cloneable{
-    private final long id;
-    private final String description;
-    private final String user;
-    private final Calendar endTimestamp;
-    private BigDecimal bidValue = BigDecimal.ZERO;
-    private String bidUser;
+public class Auction implements Cloneable, Serializable {
 
-    public Auction(long id, String description, String user, Calendar endTimestamp) {
-        this.id = id;
-        this.description = description;
-        this.user = user;
-        this.endTimestamp = endTimestamp;
-    }
+	private static final long serialVersionUID = 1L;
+	private final long id;
+	private final String description;
+	private final String user;
+	private final Calendar endTimestamp;
+	private BigDecimal bidValue = BigDecimal.ZERO;
+	private String bidUser;
 
-    public long getId() {
-        return id;
-    }
+	public Auction(long id, String description, String user,
+			Calendar endTimestamp) {
+		this.id = id;
+		this.description = description;
+		this.user = user;
+		this.endTimestamp = endTimestamp;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public long getId() {
+		return id;
+	}
 
-    public String getUser() {
-        return user;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public Calendar getEndTimestamp() {
-        return endTimestamp;
-    }
+	public String getUser() {
+		return user;
+	}
 
-    public BigDecimal getBidValue() {
-        return bidValue;
-    }
+	public Calendar getEndTimestamp() {
+		return endTimestamp;
+	}
 
-    public void setBidValue(BigDecimal bidValue) {
-        this.bidValue = bidValue;
-    }
+	public BigDecimal getBidValue() {
+		return bidValue;
+	}
 
-    public String getBidUser() {
-        return bidUser;
-    }
+	public void setBidValue(BigDecimal bidValue) {
+		this.bidValue = bidValue;
+	}
 
-    public void setBidUser(String bidUser) {
-        this.bidUser = bidUser;
-    }
+	public String getBidUser() {
+		return bidUser;
+	}
 
-    @Override
-    public Auction clone() {
-        try {
-            synchronized(this){
-                return (Auction) super.clone();
-            }
-        } catch (CloneNotSupportedException ex) {
-            return null;
-        }
-    }
+	public void setBidUser(String bidUser) {
+		this.bidUser = bidUser;
+	}
+
+	@Override
+	public Auction clone() {
+		try {
+			synchronized (this) {
+				return (Auction) super.clone();
+			}
+		} catch (CloneNotSupportedException ex) {
+			return null;
+		}
+	}
 
 	@Override
 	public int hashCode() {
@@ -83,5 +87,4 @@ public class Auction implements Cloneable{
 		return true;
 	}
 
-    
 }

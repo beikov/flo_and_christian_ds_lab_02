@@ -1,15 +1,15 @@
 package ds02.server.service.impl;
 
 import java.io.PrintStream;
-import java.io.Serializable;
 import java.rmi.RemoteException;
 
 import ds02.server.event.Event;
 import ds02.server.event.EventHandler;
 import ds02.server.service.AnalyticsService;
 
-public class AnalyticsServiceImpl implements AnalyticsService, Serializable {
+public class AnalyticsServiceImpl implements AnalyticsService {
 
+	private static final long serialVersionUID = 1L;
 	private static final PrintStream ps = System.out;
 
 	@Override

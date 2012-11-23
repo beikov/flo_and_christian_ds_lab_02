@@ -2,6 +2,7 @@ package ds02.server.event;
 
 public class AuctionEvent extends Event {
 	private final long auctionId;
+	private static final long serialVersionUID = 1L;
 
 	public AuctionEvent(String id, String type, long timeStamp, long auctionId) {
 		super(id, type, timeStamp);
@@ -17,5 +18,4 @@ public class AuctionEvent extends Event {
 		return auctionId;
 	}
 
-	
 }

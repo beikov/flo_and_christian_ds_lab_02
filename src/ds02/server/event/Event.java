@@ -8,14 +8,16 @@ public abstract class Event implements Serializable {
 	private final String id;
 	private final String type;
 	private final long timeStamp;
-	
+
+	private static final long serialVersionUID = 1L;
+
 	public Event(String id, String type, long timeStamp) {
 		super();
 		this.id = id;
 		this.type = type;
 		this.timeStamp = timeStamp;
 	}
-	
+
 	public Event(String type) {
 		this(UUID.randomUUID().toString(), type, new Date().getTime());
 	}
@@ -31,7 +33,5 @@ public abstract class Event implements Serializable {
 	public long getTimeStamp() {
 		return timeStamp;
 	}
-	
-	
-	
+
 }
