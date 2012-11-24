@@ -1,6 +1,7 @@
 package ds02.server.service.impl;
 
 import java.rmi.RemoteException;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentNavigableMap;
@@ -85,7 +86,13 @@ public class BillingServiceSecureImpl implements BillingServiceSecure {
 			throw new RemoteException("Price may not be negative");
 		}
 		
-		final PriceStep step = priceSteps.lowerEntry(new PriceStep(price, price, 0, 0)).getKey();
+		final Map.Entry<PriceStep, Object> priceStepEntry = priceSteps.lowerEntry(new PriceStep(price, price, 0, 0));
+		
+		if(priceStepEntry == null) {
+			return;
+		}
+		
+		final PriceStep step = priceStepEntry.getKey();
 		final BillLine line = new BillLine(auctionId, price, step.getFixedPrice(), step.getVariablePricePercent() * price);
 		Bill bill = bills.get(user);
 		

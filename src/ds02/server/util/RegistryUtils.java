@@ -11,9 +11,6 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.apache.log4j.Logger;
 
-import ds02.server.service.BillingService;
-import ds02.server.service.impl.BillingServiceImpl;
-
 public final class RegistryUtils {
 
 	private static final Logger LOG = Logger.getLogger(RegistryUtils.class);

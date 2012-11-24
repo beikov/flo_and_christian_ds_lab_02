@@ -168,13 +168,24 @@ public class AnalyticsServiceImpl implements AnalyticsService {
 
 		while (it.hasNext()) {
 			final EventHandler<Event> eventHandler = it.next();
-			eventHandler.handle(event);
+			try {
+				eventHandler.handle(event);
+						
+			} catch (Exception e) {
+				/* Remove the eventhandler as soon it is no longer available */
+				it.remove();
+			}
 		}
 	}
 
 	@Override
 	public void unsubscribe(String identifier) throws RemoteException {
 		subscrptions.remove(identifier);
+	}
+
+	@Override
+	public void ping() {
+		
 	}
 
 }

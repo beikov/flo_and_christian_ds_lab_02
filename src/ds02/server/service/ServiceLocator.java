@@ -1,7 +1,8 @@
 package ds02.server.service;
 
-import java.rmi.server.UnicastRemoteObject;
+import java.rmi.RemoteException;
 
+import ds02.server.util.Pingable;
 import ds02.server.util.RegistryUtils;
 
 public final class ServiceLocator {
@@ -15,9 +16,9 @@ public final class ServiceLocator {
 	private volatile AnalyticsService analyticsService;
 
 	public BillingService getBillingService() {
-		if (billingService == null) {
+		if (billingService == null || notConnected(billingService)) {
 			synchronized (billingLock) {
-				if (billingService == null) {
+				if (billingService == null || notConnected(billingService)) {
 					billingService = RegistryUtils
 							.getRemote(BillingService.class);
 				}
@@ -27,15 +28,24 @@ public final class ServiceLocator {
 	}
 
 	public AnalyticsService getAnalyticsService() {
-		if (analyticsService == null) {
+		if (analyticsService == null || notConnected(analyticsService)) {
 			synchronized (analyticsLock) {
-				if (analyticsService == null) {
+				if (analyticsService == null || notConnected(analyticsService)) {
 					analyticsService = RegistryUtils
 							.getRemote(AnalyticsService.class);
 				}
 			}
 		}
 		return analyticsService;
+	}
+	
+	private boolean notConnected(Pingable p) {
+		try {
+			p.ping();
+			return true;
+		} catch (RemoteException e) {
+			return false;
+		}
 	}
 
 }

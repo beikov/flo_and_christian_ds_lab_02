@@ -17,12 +17,12 @@ public class BidCommand implements Command {
 
 	@Override
 	public void execute(UserConnection userConnection, String[] args) {
-		Integer id = null;
+		Long id = null;
 		BigDecimal amount = null;
 
 		if (args.length > 0) {
 			try {
-				id = Integer.parseInt(args[0]);
+				id = Long.parseLong(args[0]);
 			} catch (NumberFormatException ex) {
 				/* Service will throw an exception with a good message */
 			}

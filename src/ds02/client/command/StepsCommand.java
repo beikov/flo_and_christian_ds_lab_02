@@ -1,7 +1,6 @@
 package ds02.client.command;
 
 import java.rmi.RemoteException;
-import java.util.Iterator;
 
 import ds02.client.UserContext;
 import ds02.server.model.PriceStep;

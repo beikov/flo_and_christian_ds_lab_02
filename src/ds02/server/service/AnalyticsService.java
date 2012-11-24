@@ -6,8 +6,9 @@ import java.rmi.RemoteException;
 
 import ds02.server.event.Event;
 import ds02.server.event.EventCallback;
+import ds02.server.util.Pingable;
 
-public interface AnalyticsService extends Remote, Serializable {
+public interface AnalyticsService extends Remote, Serializable, Pingable {
 	public String subscribe(String pattern, EventCallback handler)
 			throws RemoteException;
 

@@ -31,6 +31,8 @@ public class AuctionRemoveTask extends TimerTask {
 				task.run();
 			} catch (Throwable e) {
 				e.printStackTrace(System.err);
+			} finally {
+				it.remove();
 			}
 
 		}

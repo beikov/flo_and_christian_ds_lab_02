@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import ds02.client.command.PrintCommand;
 import ds02.server.event.Event;
 import ds02.server.service.BillingServiceSecure;
 
@@ -35,7 +34,7 @@ public class UserContext {
 	}
 
 	public void removeSubscription(String subscription) {
-		removeSubscription(subscription);
+		subscriptions.remove(subscription);
 	}
 
 	public boolean isAuto() {

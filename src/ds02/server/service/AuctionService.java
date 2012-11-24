@@ -20,6 +20,6 @@ public interface AuctionService extends Serializable {
 	public Auction createAuction(String user, Integer duration,
 			String description);
 
-	public Auction bid(String user, Integer id, BigDecimal amount);
+	public Auction bid(String user, Long id, BigDecimal amount);
 
 }

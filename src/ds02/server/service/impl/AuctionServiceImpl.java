@@ -94,11 +94,12 @@ public class AuctionServiceImpl implements AuctionService {
 				final EventHandler<AuctionEndedEvent> handler = auctionEndHandler;
 
 				if (handler != null) {
-					final Auction auction = auctions.remove(id);
+					final Auction auction = auctions.get(id);
 
 					if (auction != null) {
 						synchronized (auction) {
 							handler.handle(new AuctionEndedEvent(id));
+							auctions.remove(id);
 						}
 
 					}
@@ -118,7 +119,7 @@ public class AuctionServiceImpl implements AuctionService {
 	 * java.lang.Integer, java.math.BigDecimal)
 	 */
 	@Override
-	public Auction bid(String user, Integer id, BigDecimal amount) {
+	public Auction bid(String user, Long id, BigDecimal amount) {
 		if (user == null || user.isEmpty()) {
 			throw new IllegalArgumentException("Invalid user");
 		}

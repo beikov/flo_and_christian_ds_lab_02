@@ -25,9 +25,9 @@ public class AuctionEndedEventHandler extends
 		}
 		try {
 			BillingServiceSecure billingServiceSecure = ServiceLocator.INSTANCE
-					.getBillingService().login("user", "password");
+					.getBillingService().login("john", "dslab2012");
 
-			billingServiceSecure.billAuction(auction.getBidUser(),
+			billingServiceSecure.billAuction(auction.getUser(),
 					event.getAuctionId(), auction.getBidValue().doubleValue());
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
