@@ -14,13 +14,14 @@ import java.util.concurrent.Executors;
 import ds02.server.event.DisconnectedEvent;
 import ds02.server.event.EventHandler;
 import ds02.server.service.AuctionService;
+import ds02.server.service.ServiceLocator;
 
 public class ServerMain {
 
 	private static final int THREADS = 10;
 
 	public static void main(String[] args) {
-		if (args.length != 1) {
+		if (args.length != 3) {
 			usage();
 		}
 
@@ -33,6 +34,7 @@ public class ServerMain {
 			usage();
 		}
 
+		ServiceLocator.init(args[1], args[2]);
 		BufferedReader in = null;
 
 		try {

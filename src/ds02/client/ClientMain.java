@@ -5,46 +5,57 @@ import java.io.BufferedWriter;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.OutputStreamWriter;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.net.Socket;
 
 import org.apache.log4j.Logger;
 
-public class ClientMain {
+import ds02.server.service.ServiceLocator;
+
+public class ClientMain implements Client {
 	
 	private static final Logger LOG = Logger.getLogger(ClientMain.class);
+	private final BufferedReader in;
+	/* Socket connection to server */
+	private final Socket socket;
+	/* Using this one since we might have multiline responses */
+	private final ObjectInputStream socketReader;
+	private final BufferedWriter socketWriter;
+	private final Runnable shutdownHook;
 
-	public static void main(String[] args) {
-		final BufferedReader in = new BufferedReader(new InputStreamReader(
-				System.in));
-		/* Socket connection to server */
-		final Socket socket;
-		/* Using this one since we might have multiline responses */
-		final ObjectInputStream socketReader;
-		final BufferedWriter socketWriter;
-
-		if (args.length != 2 && args.length != 3) {
-			usage();
-		}
-
-		String host = args[0];
-		int tcpPort = 0;
-
+	public ClientMain(BufferedReader in, String host, int tcpPort) {
+		this.in = in;
+		
 		try {
-			tcpPort = Integer.parseInt(args[1]);
-		} catch (NumberFormatException ex) {
-			LOG.error(ex);
-			usage();
-		}
-
-		try {
-			socket = new Socket(host, tcpPort);
-			socketReader = new ObjectInputStream(socket.getInputStream());
-			socketWriter = new BufferedWriter(new OutputStreamWriter(
+			this.socket = new Socket(host, tcpPort);
+			this.socketReader = new ObjectInputStream(socket.getInputStream());
+			this.socketWriter = new BufferedWriter(new OutputStreamWriter(
 					socket.getOutputStream()));
 		} catch (Exception ex) {
 			throw new RuntimeException("Could not connect to server", ex);
 		}
 
+		shutdownHook = new Runnable() {
+
+			@Override
+			public void run() {
+
+				if (ClientMain.this.socket != null) {
+					try {
+						ClientMain.this.socket.close();
+					} catch (Exception ex1) {
+						// Ignore
+					}
+				}
+
+			}
+		};
+
+		Runtime.getRuntime().addShutdownHook(new Thread(shutdownHook));
+	}
+	
+	public void run(){
 		String user = null;
 		String command;
 		String prompt = "> ";
@@ -113,25 +124,41 @@ public class ClientMain {
 			}
 		}
 
-		Runnable shutdownHook = new Runnable() {
-
-			@Override
-			public void run() {
-
-				if (socket != null) {
-					try {
-						socket.close();
-					} catch (Exception ex1) {
-						// Ignore
-					}
-				}
-
-			}
-		};
-
-		Runtime.getRuntime().addShutdownHook(new Thread(shutdownHook));
-
 		shutdownHook.run();
+	}
+
+	public static void main(String[] args) {
+		if (args.length != 2 && args.length != 3) {
+			usage();
+		}
+
+		String host = args[0];
+		int tcpPort = 0;
+
+		try {
+			tcpPort = Integer.parseInt(args[1]);
+		} catch (NumberFormatException ex) {
+			LOG.error(ex);
+			usage();
+		}
+		
+		final Client client;
+
+		try{
+			if(args.length == 3){
+				/* Create load test */
+				ServiceLocator.init(args[2], null);
+				client = new LoadTestClient(host, tcpPort);
+			} else {
+				final BufferedReader in = new BufferedReader(new InputStreamReader(
+						System.in));
+				client = new ClientMain(in, host, tcpPort);
+			}
+		}catch(Exception ex){
+			throw new RuntimeException("Could not instantiate client", ex);
+		}
+		
+		client.run();
 	}
 
 	private static void usage() {

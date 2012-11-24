@@ -76,13 +76,18 @@ public final class RegistryUtils {
 	}
 
 	public static <T extends Remote> T getRemote(Class<T> clazz) {
+		return getRemote(clazz.getName());
+	}
+
+	public static <T extends Remote> T getRemote(String name) {
 		try {
-			final T remote = clazz.cast(getOrCreateRegistry().lookup(clazz.getName()));
+			@SuppressWarnings("unchecked")
+			final T remote = (T) getOrCreateRegistry().lookup(name);
 			LOOKEDUP_REMOTES.put(remote, STUB);
 			return remote;
 		} catch (Exception e) {
 			LOG.error(
-					"Could not lookup Remote Object of type " + clazz.getName(),
+					"Could not lookup Remote Object of type " + name,
 					e);
 		}
 		return null;
@@ -90,9 +95,14 @@ public final class RegistryUtils {
 
 	public static <T extends Remote, U extends T> void bindService(
 			Class<T> clazz, Class<U> remote) {
+		bindService(clazz.getName(), remote);
+	}
+
+	public static <U extends Remote> void bindService(
+			String name, Class<U> remote) {
 		try {
-			BOUND_REMOTES.put(clazz.getName(), STUB);
-			getOrCreateRegistry().rebind(clazz.getName(), exportObject(remote.newInstance()));
+			BOUND_REMOTES.put(name, STUB);
+			getOrCreateRegistry().rebind(name, exportObject(remote.newInstance()));
 		} catch (Exception e) {
 			throw new RuntimeException("Could not bind!", e);
 		}

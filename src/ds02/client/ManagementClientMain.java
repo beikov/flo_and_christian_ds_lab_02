@@ -18,18 +18,20 @@ import ds02.client.command.RemoveStepCommand;
 import ds02.client.command.StepsCommand;
 import ds02.client.command.SubscribeCommand;
 import ds02.client.command.UnsubscribeCommand;
+import ds02.server.BillingServer;
+import ds02.server.service.ServiceLocator;
 
-public class ManagementClientMain {
+public class ManagementClientMain implements Client {
 
 	private static final String[] NO_ARGS = new String[0];
 	private final UserContext context = new UserContext();
 	private Map<String, Command> loggedInCommandMap = new HashMap<String, Command>();
 	private Map<String, Command> loggedOutCommandMap = new HashMap<String, Command>();
 	
-	private BufferedReader br = new BufferedReader(new InputStreamReader(
-			System.in));
+	private final BufferedReader in;
 
-	public ManagementClientMain() {
+	public ManagementClientMain(BufferedReader in) {
+		this.in = in;
 		assembleCommands();
 	}
 
@@ -84,7 +86,7 @@ public class ManagementClientMain {
 		System.out.flush();
 
 		try {
-			return br.readLine();
+			return in.readLine();
 		} catch (IOException e) {
 			return null;
 		}
@@ -113,6 +115,19 @@ public class ManagementClientMain {
 	}
 
 	public static void main(String[] args) {
-		new ManagementClientMain().run();
+		if (args.length != 2) {
+			usage();
+		}
+		
+		ServiceLocator.init(args[0], args[1]);
+		BufferedReader in = new BufferedReader(new InputStreamReader(
+				System.in));
+		new ManagementClientMain(in).run();
+	}
+
+	private static void usage() {
+		System.out.println("Usage: " + ManagementClientMain.class.getSimpleName()
+				+ " <analyticsServerBinding> <billingServerBinding>");
+		System.exit(1);
 	}
 }

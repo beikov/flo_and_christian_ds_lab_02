@@ -7,6 +7,8 @@ import ds02.server.util.RegistryUtils;
 
 public final class ServiceLocator {
 
+	private static String analyticsServiceName = AnalyticsService.class.getName();
+	private static String billingServiceName = BillingService.class.getName();
 	public static ServiceLocator INSTANCE = new ServiceLocator();
 
 	private final Object billingLock = new Object();
@@ -14,13 +16,22 @@ public final class ServiceLocator {
 
 	private volatile BillingService billingService;
 	private volatile AnalyticsService analyticsService;
+	
+	public static void init(String analyticsServiceName, String billingServiceName){
+		if(analyticsServiceName != null){
+			ServiceLocator.analyticsServiceName = analyticsServiceName;
+		}
+		if(billingServiceName != null){
+			ServiceLocator.billingServiceName = billingServiceName;
+		}
+	}
 
 	public BillingService getBillingService() {
 		if (billingService == null || notConnected(billingService)) {
 			synchronized (billingLock) {
 				if (billingService == null || notConnected(billingService)) {
 					billingService = RegistryUtils
-							.getRemote(BillingService.class);
+							.getRemote(billingServiceName);
 				}
 			}
 		}
@@ -32,7 +43,7 @@ public final class ServiceLocator {
 			synchronized (analyticsLock) {
 				if (analyticsService == null || notConnected(analyticsService)) {
 					analyticsService = RegistryUtils
-							.getRemote(AnalyticsService.class);
+							.getRemote(analyticsServiceName);
 				}
 			}
 		}
