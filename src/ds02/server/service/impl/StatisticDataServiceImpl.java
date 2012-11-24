@@ -96,26 +96,28 @@ public class StatisticDataServiceImpl implements StatisticsDataService {
 	public long getOverallTimeOfUserSessions() {
 		return totalSessionTime.get();
 	}
-	
+
 	@Override
 	public double getAverageAuctionTime() {
-		return ((double)totalAuctionTime.get()/(double)totalAuctionCount.get());
+		return ((double) totalAuctionTime.get() / (double) totalAuctionCount
+				.get());
 	}
 
 	@Override
 	public void addFinishedAuction(long auctionDuration) {
 		totalAuctionTime.addAndGet(auctionDuration);
 	}
-	
+
 	@Override
 	public void incrementSuccessfullAuctions() {
 		totalSuccessfullAuctions.incrementAndGet();
 	}
+
 	@Override
 	public void incrementAuctionCount() {
 		totalAuctionCount.incrementAndGet();
 	}
-	
+
 	@Override
 	public void addUserSessionTime(long sessionTime) {
 		// lock free :-)

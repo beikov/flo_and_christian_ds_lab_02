@@ -2,9 +2,10 @@ package ds02.server.event;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.UUID;
+import java.util.concurrent.atomic.AtomicLong;
 
 public abstract class Event implements Serializable {
+	private final static AtomicLong uid = new AtomicLong();
 	private final String id;
 	private final String type;
 	private final long timeStamp;
@@ -19,7 +20,7 @@ public abstract class Event implements Serializable {
 	}
 
 	public Event(String type) {
-		this(UUID.randomUUID().toString(), type, new Date().getTime());
+		this("" + uid.getAndIncrement(), type, new Date().getTime());
 	}
 
 	public String getId() {
@@ -37,9 +38,9 @@ public abstract class Event implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		return sb.append(getType()).append(": ").append(new Date(getTimeStamp()).toString()).append(" - ").toString();
+		return sb.append(getType()).append(": ")
+				.append(new Date(getTimeStamp()).toString()).append(" - ")
+				.toString();
 	}
-	
-	
 
 }

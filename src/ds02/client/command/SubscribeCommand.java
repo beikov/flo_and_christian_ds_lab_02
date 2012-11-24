@@ -15,17 +15,18 @@ public class SubscribeCommand implements Command {
 		if (args.length != 1) {
 			throw new RuntimeException("Dummkopf!");
 		}
-		
+
 		EventCallback ec = RegistryUtils.exportObject(new EventCallback() {
-			
+
 			@Override
 			public void handle(Event event) {
 				context.addEvent(event);
 			}
-		}) ;
-		
+		});
+
 		try {
-			ServiceLocator.INSTANCE.getAnalyticsService().subscribe(args[0], ec);
+			ServiceLocator.INSTANCE.getAnalyticsService()
+					.subscribe(args[0], ec);
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -1,6 +1,5 @@
 package ds02.server;
 
-import ds02.server.service.BillingService;
 import ds02.server.service.impl.BillingServiceImpl;
 import ds02.server.util.RegistryUtils;
 import ds02.server.util.RuntimeUtils;
@@ -11,14 +10,13 @@ public class BillingServer {
 		if (args.length != 1) {
 			usage();
 		}
-		
+
 		try {
-			RegistryUtils.bindService(args[0],
-					BillingServiceImpl.class);
-		} catch(Exception e) {
+			RegistryUtils.bindService(args[0], BillingServiceImpl.class);
+		} catch (Exception e) {
 			e.printStackTrace(System.err);
 		}
-		
+
 		RuntimeUtils.waitForExitCommand();
 	}
 

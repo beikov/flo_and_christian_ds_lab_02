@@ -10,14 +10,13 @@ public class AnalyticsServer {
 		if (args.length != 1) {
 			usage();
 		}
-		
+
 		try {
-			RegistryUtils.bindService(args[0],
-					AnalyticsServiceImpl.class);
+			RegistryUtils.bindService(args[0], AnalyticsServiceImpl.class);
 		} catch (Exception e) {
 			e.printStackTrace(System.err);
 		}
-		
+
 		RuntimeUtils.waitForExitCommand();
 	}
 

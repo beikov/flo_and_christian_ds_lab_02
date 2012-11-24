@@ -42,9 +42,9 @@ public final class RuntimeUtils {
 			} catch (Exception e) {
 				e.printStackTrace(System.err);
 			}
-			
+
 			it.remove();
 		}
-		//System.exit(0);
+		// System.exit(0);
 	}
 }

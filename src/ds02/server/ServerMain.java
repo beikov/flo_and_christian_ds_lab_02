@@ -18,7 +18,7 @@ import ds02.server.service.ServiceLocator;
 
 public class ServerMain {
 
-	private static final int THREADS = 10;
+	private static final int THREADS = 5000;
 
 	public static void main(String[] args) {
 		if (args.length != 3) {

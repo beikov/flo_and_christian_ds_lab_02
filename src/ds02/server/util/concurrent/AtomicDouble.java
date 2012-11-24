@@ -8,19 +8,19 @@ public class AtomicDouble {
 	public AtomicDouble() {
 		longValue = new AtomicLong();
 	}
-	
-	public AtomicDouble(double value){
+
+	public AtomicDouble(double value) {
 		longValue = new AtomicLong(Double.doubleToRawLongBits(value));
 	}
-	
-	public final double get(){
+
+	public final double get() {
 		return Double.longBitsToDouble(longValue.get());
 	}
-	
-	public boolean compareAndSet(double original, double newValue){
-			long current = Double.doubleToRawLongBits(original);
-			long next = Double.doubleToRawLongBits(newValue);
-			return (longValue.compareAndSet(current, next));
+
+	public boolean compareAndSet(double original, double newValue) {
+		long current = Double.doubleToRawLongBits(original);
+		long next = Double.doubleToRawLongBits(newValue);
+		return (longValue.compareAndSet(current, next));
 	}
-	
+
 }

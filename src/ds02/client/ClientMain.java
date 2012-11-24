@@ -5,8 +5,6 @@ import java.io.BufferedWriter;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.OutputStreamWriter;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
 import java.net.Socket;
 
 import org.apache.log4j.Logger;
@@ -14,7 +12,7 @@ import org.apache.log4j.Logger;
 import ds02.server.service.ServiceLocator;
 
 public class ClientMain implements Client {
-	
+
 	private static final Logger LOG = Logger.getLogger(ClientMain.class);
 	private final BufferedReader in;
 	/* Socket connection to server */
@@ -26,7 +24,7 @@ public class ClientMain implements Client {
 
 	public ClientMain(BufferedReader in, String host, int tcpPort) {
 		this.in = in;
-		
+
 		try {
 			this.socket = new Socket(host, tcpPort);
 			this.socketReader = new ObjectInputStream(socket.getInputStream());
@@ -54,8 +52,8 @@ public class ClientMain implements Client {
 
 		Runtime.getRuntime().addShutdownHook(new Thread(shutdownHook));
 	}
-	
-	public void run(){
+
+	public void run() {
 		String user = null;
 		String command;
 		String prompt = "> ";
@@ -67,7 +65,7 @@ public class ClientMain implements Client {
 				command = null;
 			}
 
-			if (command == null || "!end".equals(command)) {
+			if (command == null || "!exit".equals(command)) {
 				break;
 			}
 
@@ -83,7 +81,7 @@ public class ClientMain implements Client {
 					 * If no args are given, pass empty argument to get the
 					 * right error message
 					 */
-					if (commandParts.length < 2) {
+ 					if (commandParts.length < 2) {
 						socketWriter.write(' ');
 					}
 
@@ -141,23 +139,23 @@ public class ClientMain implements Client {
 			LOG.error(ex);
 			usage();
 		}
-		
+
 		final Client client;
 
-		try{
-			if(args.length == 3){
+		try {
+			if (args.length == 3) {
 				/* Create load test */
 				ServiceLocator.init(args[2], null);
 				client = new LoadTestClient(host, tcpPort);
 			} else {
-				final BufferedReader in = new BufferedReader(new InputStreamReader(
-						System.in));
+				final BufferedReader in = new BufferedReader(
+						new InputStreamReader(System.in));
 				client = new ClientMain(in, host, tcpPort);
 			}
-		}catch(Exception ex){
+		} catch (Exception ex) {
 			throw new RuntimeException("Could not instantiate client", ex);
 		}
-		
+
 		client.run();
 	}
 

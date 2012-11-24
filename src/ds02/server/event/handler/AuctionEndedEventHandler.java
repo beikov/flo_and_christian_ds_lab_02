@@ -14,15 +14,17 @@ public class AuctionEndedEventHandler extends
 
 	@Override
 	public void handle(AuctionEndedEvent event) {
-		// TODO Auto-generated method stub
 		super.handle(event);
+
 		Auction auction = AuctionService.INSTANCE.getAuction(event
 				.getAuctionId());
+
 		if (auction.getBidUser() != null) {
 			DefaultEventHandler.INSTANCE.handle(new BidWonEvent(auction
 					.getBidUser(), auction.getId(), auction.getBidValue()
 					.doubleValue()));
 		}
+
 		try {
 			BillingServiceSecure billingServiceSecure = ServiceLocator.INSTANCE
 					.getBillingService().login("john", "dslab2012");
@@ -30,7 +32,6 @@ public class AuctionEndedEventHandler extends
 			billingServiceSecure.billAuction(auction.getUser(),
 					event.getAuctionId(), auction.getBidValue().doubleValue());
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

@@ -38,20 +38,20 @@ public class PriceStep implements Serializable, Comparable<PriceStep> {
 
 	@Override
 	public int compareTo(PriceStep priceStep) {
-		if(this.startPrice > priceStep.startPrice){
-			if(this.startPrice < priceStep.endPrice){
+		if (this.startPrice > priceStep.startPrice) {
+			if (this.startPrice < priceStep.endPrice) {
 				throw new IllegalArgumentException("Overlapping price steps");
 			} else {
 				return 1;
 			}
-		} else if(this.startPrice < priceStep.startPrice){
-			if(this.endPrice > priceStep.startPrice){
+		} else if (this.startPrice < priceStep.startPrice) {
+			if (this.endPrice > priceStep.startPrice) {
 				throw new IllegalArgumentException("Overlapping price steps");
 			} else {
 				return -1;
 			}
 		}
-		
+
 		return 0;
 	}
 

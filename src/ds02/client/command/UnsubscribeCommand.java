@@ -12,12 +12,12 @@ public class UnsubscribeCommand implements Command {
 		if (args.length != 1) {
 			throw new RuntimeException("Dummkopf!");
 		}
-		
+
 		try {
 			ServiceLocator.INSTANCE.getAnalyticsService().unsubscribe(args[0]);
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
-			//e.printStackTrace();
+			// e.printStackTrace();
 		}
 	}
 

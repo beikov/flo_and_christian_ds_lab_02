@@ -1,7 +1,5 @@
 package ds02.server.event;
 
-import ds02.server.service.impl.StatisticDataServiceImpl;
-
 public class UserSessiontimeAvgEvent extends StatisticsEvent {
 	private static final long serialVersionUID = 1L;
 
@@ -11,8 +9,7 @@ public class UserSessiontimeAvgEvent extends StatisticsEvent {
 
 	@Override
 	public String toString() {
-		return super.toString() + "minimum session time is "
-				+ StatisticDataServiceImpl.INSTANCE.getMinUserSessionTime()
+		return super.toString() + "minimum session time is " + getValue()
 				+ " seconds";
 	}
 

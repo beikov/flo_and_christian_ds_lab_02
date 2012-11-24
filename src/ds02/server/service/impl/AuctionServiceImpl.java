@@ -143,7 +143,7 @@ public class AuctionServiceImpl implements AuctionService {
 
 		final Auction result;
 		String overbidUser = null;
-		
+
 		synchronized (auction) {
 			result = auction.clone();
 
@@ -155,8 +155,9 @@ public class AuctionServiceImpl implements AuctionService {
 			}
 		}
 
-		DefaultEventHandler.INSTANCE.handle(new BidPlacedEvent(user, id, amount.doubleValue()));
-		
+		DefaultEventHandler.INSTANCE.handle(new BidPlacedEvent(user, id, amount
+				.doubleValue()));
+
 		if (overbidUser != null) {
 			/* Notify the user who has been overbidden */
 			final EventHandler<Event> handler = overbidHandler;

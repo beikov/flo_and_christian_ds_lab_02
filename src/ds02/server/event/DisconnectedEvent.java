@@ -12,5 +12,4 @@ public class DisconnectedEvent extends UserEvent {
 		return super.toString() + " user " + getUser() + " was disconnected";
 	}
 
-	
 }

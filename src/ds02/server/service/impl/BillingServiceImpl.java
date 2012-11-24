@@ -12,29 +12,31 @@ import ds02.server.util.RegistryUtils;
 public class BillingServiceImpl implements BillingService {
 
 	private static final long serialVersionUID = 1L;
-	private static final Properties users = PropertiesUtils.getProperties("user.properties");
-	private static final BillingServiceSecure BILLING_SERVICE_SECURE = RegistryUtils.exportObject(new BillingServiceSecureImpl());
-	
+	private static final Properties users = PropertiesUtils
+			.getProperties("user.properties");
+	private static final BillingServiceSecure BILLING_SERVICE_SECURE = RegistryUtils
+			.exportObject(new BillingServiceSecureImpl());
+
 	@Override
 	public BillingServiceSecure login(String username, String password)
 			throws RemoteException {
-		if(username == null || username.isEmpty()){
+		if (username == null || username.isEmpty()) {
 			throw new RemoteException("Invalid username given");
 		}
-		if(password == null || password.isEmpty()){
+		if (password == null || password.isEmpty()) {
 			throw new RemoteException("Invalid password given");
 		}
-		
-		if(!PasswordUtils.matches(password, users.getProperty(username))){
+
+		if (!PasswordUtils.matches(password, users.getProperty(username))) {
 			return null;
 		}
-		
+
 		return BILLING_SERVICE_SECURE;
 	}
 
 	@Override
 	public void ping() {
-		
+
 	}
 
 }

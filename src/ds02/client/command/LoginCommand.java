@@ -9,6 +9,7 @@ import ds02.server.util.RegistryUtils;
 
 public class LoginCommand implements Command {
 	private static final Logger LOG = Logger.getLogger(LoginCommand.class);
+
 	@Override
 	public void execute(UserContext context, String[] args) {
 		BillingServiceSecure billingServiceSecure = null;
@@ -30,7 +31,7 @@ public class LoginCommand implements Command {
 					BillingService.class).login(username, password)) != null) {
 
 				context.login(username, billingServiceSecure);
-				
+
 				System.out.println(username + " successfully logged in");
 			} else {
 				System.out.println("Login failed");

@@ -18,7 +18,6 @@ import ds02.client.command.RemoveStepCommand;
 import ds02.client.command.StepsCommand;
 import ds02.client.command.SubscribeCommand;
 import ds02.client.command.UnsubscribeCommand;
-import ds02.server.BillingServer;
 import ds02.server.service.ServiceLocator;
 
 public class ManagementClientMain implements Client {
@@ -27,7 +26,7 @@ public class ManagementClientMain implements Client {
 	private final UserContext context = new UserContext();
 	private Map<String, Command> loggedInCommandMap = new HashMap<String, Command>();
 	private Map<String, Command> loggedOutCommandMap = new HashMap<String, Command>();
-	
+
 	private final BufferedReader in;
 
 	public ManagementClientMain(BufferedReader in) {
@@ -100,7 +99,7 @@ public class ManagementClientMain implements Client {
 		loggedOutCommandMap.put("!print", new PrintCommand());
 		loggedOutCommandMap.put("!auto", new AutoCommand());
 		loggedOutCommandMap.put("!hide", new HideCommand());
-		
+
 		loggedInCommandMap.put("!login", new LoginCommand());
 		loggedInCommandMap.put("!logout", new LogoutCommand());
 		loggedInCommandMap.put("!steps", new StepsCommand());
@@ -118,15 +117,15 @@ public class ManagementClientMain implements Client {
 		if (args.length != 2) {
 			usage();
 		}
-		
+
 		ServiceLocator.init(args[0], args[1]);
-		BufferedReader in = new BufferedReader(new InputStreamReader(
-				System.in));
+		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		new ManagementClientMain(in).run();
 	}
 
 	private static void usage() {
-		System.out.println("Usage: " + ManagementClientMain.class.getSimpleName()
+		System.out.println("Usage: "
+				+ ManagementClientMain.class.getSimpleName()
 				+ " <analyticsServerBinding> <billingServerBinding>");
 		System.exit(1);
 	}

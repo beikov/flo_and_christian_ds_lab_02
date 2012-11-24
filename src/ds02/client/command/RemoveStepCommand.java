@@ -13,13 +13,13 @@ public class RemoveStepCommand implements Command {
 		double startPrice = Double.parseDouble(args[0]);
 		double endPrice = Double.parseDouble(args[1]);
 
-
 		if (endPrice == 0 && endPrice < startPrice) {
 			endPrice = Double.POSITIVE_INFINITY;
 		}
 		try {
-			context.getBillingServiceSecure().deletePriceStep(startPrice, endPrice);
-			
+			context.getBillingServiceSecure().deletePriceStep(startPrice,
+					endPrice);
+
 			System.out.println("Price step ["
 					+ startPrice
 					+ " "

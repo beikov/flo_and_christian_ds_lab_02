@@ -9,7 +9,8 @@ public class LogoutCommand implements Command {
 		if (!context.isLoggedIn()) {
 			System.out.println("You have to log in first!");
 		} else {
-			System.out.println(context.getUsername() + " successfully logged out");
+			System.out.println(context.getUsername()
+					+ " successfully logged out");
 			context.logout();
 		}
 	}

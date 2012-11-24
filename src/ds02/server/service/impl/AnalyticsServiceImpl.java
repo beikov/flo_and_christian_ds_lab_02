@@ -1,11 +1,10 @@
 package ds02.server.service.impl;
 
 import java.rmi.RemoteException;
-import java.util.Date;
 import java.util.Iterator;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Pattern;
 
 import ds02.server.event.AuctionEvent;
@@ -29,6 +28,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
 	private final ConcurrentMap<String, EventHandler<Event>> subscrptions = new ConcurrentHashMap<String, EventHandler<Event>>();
 	private final ConcurrentMap<String, Long> startValue = new ConcurrentHashMap<String, Long>();
 	private final ConcurrentMap<Long, Long> auctionBegin = new ConcurrentHashMap<Long, Long>();
+	private final AtomicLong subscribeSequence = new AtomicLong();
 
 	public AnalyticsServiceImpl() {
 		subscribe0("USER_LOGIN", new EventCallback() {
@@ -46,12 +46,14 @@ public class AnalyticsServiceImpl implements AnalyticsService {
 			@Override
 			public void handle(Event event) {
 				UserEvent userEvent = (UserEvent) event;
+
 				if (startValue.containsKey(userEvent.getUser())) {
 					StatisticDataServiceImpl.INSTANCE
-							.addUserSessionTime(startValue.get(userEvent
-									.getUser()));
+							.addUserSessionTime(userEvent.getTimeStamp()
+									- startValue.remove(userEvent.getUser()));
 
 				}
+
 				processEvent0(new UserSessiontimeMinEvent(
 						StatisticDataServiceImpl.INSTANCE
 								.getMinUserSessionTime()));
@@ -63,32 +65,27 @@ public class AnalyticsServiceImpl implements AnalyticsService {
 								.getAverageUserSessionTime()));
 			}
 		});
-		subscribe0("USER_LOUGOUT", new EventCallback() {
-
-			@Override
-			public void handle(Event event) {
-				StatisticDataServiceImpl.INSTANCE.incrementBidCount();
-			}
-		});
 
 		subscribe0("AUCTION_STARTED", new EventCallback() {
 
 			@Override
 			public void handle(Event event) {
 				auctionBegin.put(((AuctionEvent) event).getAuctionId(),
-						new Date().getTime());
+						event.getTimeStamp());
 				StatisticDataServiceImpl.INSTANCE.incrementAuctionCount();
 			}
 		});
-		
+
 		subscribe0("BID_WON", new EventCallback() {
 
 			@Override
 			public void handle(Event event) {
-				StatisticDataServiceImpl.INSTANCE.incrementSuccessfullAuctions();
-				
+				StatisticDataServiceImpl.INSTANCE
+						.incrementSuccessfullAuctions();
+
 				processEvent0(new AuctionSuccessRatioEvent(
-						StatisticDataServiceImpl.INSTANCE.getAuctionSuccessRatio()));
+						StatisticDataServiceImpl.INSTANCE
+								.getAuctionSuccessRatio()));
 			}
 		});
 
@@ -103,9 +100,10 @@ public class AnalyticsServiceImpl implements AnalyticsService {
 							- auctionBegin.remove(((AuctionEvent) event)
 									.getAuctionId()));
 				}
-				
+
 				processEvent0(new AuctionTimeAvgEvent(
-						StatisticDataServiceImpl.INSTANCE.getAverageAuctionTime()));
+						StatisticDataServiceImpl.INSTANCE
+								.getAverageAuctionTime()));
 			}
 		});
 
@@ -153,9 +151,8 @@ public class AnalyticsServiceImpl implements AnalyticsService {
 
 		};
 
-		do {
-			uuid = UUID.randomUUID().toString();
-		} while (subscrptions.putIfAbsent(uuid, wrappedHandler) != null);
+		subscrptions.put((uuid = "" + subscribeSequence.incrementAndGet()),
+				wrappedHandler);
 
 		return uuid;
 	}
@@ -172,7 +169,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
 			final EventHandler<Event> eventHandler = it.next();
 			try {
 				eventHandler.handle(event);
-						
+
 			} catch (Exception e) {
 				/* Remove the eventhandler as soon it is no longer available */
 				it.remove();
@@ -187,7 +184,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
 
 	@Override
 	public void ping() {
-		
+
 	}
 
 }

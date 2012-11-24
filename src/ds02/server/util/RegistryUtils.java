@@ -33,13 +33,13 @@ public final class RegistryUtils {
 					}
 					it.remove();
 				}
-				
-				final Iterator<Remote> iter = LOOKEDUP_REMOTES.keySet().iterator();
+
+				final Iterator<Remote> iter = LOOKEDUP_REMOTES.keySet()
+						.iterator();
 
 				while (iter.hasNext()) {
 					try {
-						UnicastRemoteObject.unexportObject(
-								iter.next(), true);
+						UnicastRemoteObject.unexportObject(iter.next(), true);
 					} catch (Exception e) {
 						// IGNORE
 					}
@@ -57,14 +57,14 @@ public final class RegistryUtils {
 					"1099"));
 
 			Registry r = null;
-			
+
 			try {
 				r = LocateRegistry.createRegistry(port);
 			} catch (Exception e) {
-				
+
 			}
-			
-			if(r == null) {
+
+			if (r == null) {
 				r = LocateRegistry.getRegistry(host, port);
 			}
 			return r;
@@ -86,9 +86,7 @@ public final class RegistryUtils {
 			LOOKEDUP_REMOTES.put(remote, STUB);
 			return remote;
 		} catch (Exception e) {
-			LOG.error(
-					"Could not lookup Remote Object of type " + name,
-					e);
+			LOG.error("Could not lookup Remote Object of type " + name, e);
 		}
 		return null;
 	}
@@ -98,11 +96,12 @@ public final class RegistryUtils {
 		bindService(clazz.getName(), remote);
 	}
 
-	public static <U extends Remote> void bindService(
-			String name, Class<U> remote) {
+	public static <U extends Remote> void bindService(String name,
+			Class<U> remote) {
 		try {
 			BOUND_REMOTES.put(name, STUB);
-			getOrCreateRegistry().rebind(name, exportObject(remote.newInstance()));
+			getOrCreateRegistry().rebind(name,
+					exportObject(remote.newInstance()));
 		} catch (Exception e) {
 			throw new RuntimeException("Could not bind!", e);
 		}

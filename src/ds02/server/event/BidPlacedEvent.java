@@ -1,6 +1,5 @@
 package ds02.server.event;
 
-
 public class BidPlacedEvent extends BidEvent {
 	private static final long serialVersionUID = 1L;
 
@@ -9,7 +8,7 @@ public class BidPlacedEvent extends BidEvent {
 	}
 
 	public String toString() {
-		return super.toString() + "new bid of value " + getPrice() + " for auction "
-				+ getAuctionId();
+		return super.toString() + "new bid of value " + getPrice()
+				+ " for auction " + getAuctionId();
 	}
 }

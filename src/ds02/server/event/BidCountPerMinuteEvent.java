@@ -1,7 +1,5 @@
 package ds02.server.event;
 
-import ds02.server.service.impl.StatisticDataServiceImpl;
-
 public class BidCountPerMinuteEvent extends StatisticsEvent {
 	private static final long serialVersionUID = 1L;
 
@@ -10,7 +8,6 @@ public class BidCountPerMinuteEvent extends StatisticsEvent {
 	}
 
 	public String toString() {
-		return super.toString() + "current bid per minute is "
-				+ StatisticDataServiceImpl.INSTANCE.getBidCountPerMinute();
+		return super.toString() + "current bid per minute is " + getValue();
 	}
 }

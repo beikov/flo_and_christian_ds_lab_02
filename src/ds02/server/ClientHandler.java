@@ -28,31 +28,35 @@ public class ClientHandler implements Runnable {
 
 		loggedOutCommandMap.put("!login", loginCommand);
 		loggedOutCommandMap.put("!logout", logoutCommand);
-		loggedOutCommandMap.put("!list", new ListCommand(AuctionService.INSTANCE));
+		loggedOutCommandMap.put("!list", new ListCommand(
+				AuctionService.INSTANCE));
 
 		loggedInCommandMap.put("!login", loginCommand);
 		loggedInCommandMap.put("!logout", logoutCommand);
 
-		loggedInCommandMap.put("!list", new ListCommand(AuctionService.INSTANCE));
-		loggedInCommandMap.put("!create",
-				new CreateCommand(AuctionService.INSTANCE));
+		loggedInCommandMap.put("!list",
+				new ListCommand(AuctionService.INSTANCE));
+		loggedInCommandMap.put("!create", new CreateCommand(
+				AuctionService.INSTANCE));
 		loggedInCommandMap.put("!bid", new BidCommand(AuctionService.INSTANCE));
 	}
 
 	public ClientHandler(final UserConnection userConnection) {
 		this.userConnection = userConnection;
-		this.userConnection.addCloseListener(new EventHandler<DisconnectedEvent>() {
-			@Override
-			public void handle(DisconnectedEvent event) {
-				/*
-				 * We do the logout here directly so we don't have to pass
-				 * anything to the logout command that would supress the
-				 * response.
-				 */
-				UserService.INSTANCE.logout(userConnection.getUsername());
-				userConnection.logout();
-			}
-		});
+		this.userConnection
+				.addCloseListener(new EventHandler<DisconnectedEvent>() {
+					@Override
+					public void handle(DisconnectedEvent event) {
+						/*
+						 * We do the logout here directly so we don't have to
+						 * pass anything to the logout command that would
+						 * supress the response.
+						 */
+						UserService.INSTANCE.logout(userConnection
+								.getUsername());
+						userConnection.logout();
+					}
+				});
 	}
 
 	public void stop() {

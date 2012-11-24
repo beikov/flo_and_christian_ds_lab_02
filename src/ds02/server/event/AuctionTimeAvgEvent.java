@@ -1,7 +1,5 @@
 package ds02.server.event;
 
-import ds02.server.service.impl.StatisticDataServiceImpl;
-
 public class AuctionTimeAvgEvent extends StatisticsEvent {
 	private static final long serialVersionUID = 1L;
 
@@ -11,8 +9,7 @@ public class AuctionTimeAvgEvent extends StatisticsEvent {
 
 	@Override
 	public String toString() {
-		return super.toString() + "the average auction time is "
-				+ StatisticDataServiceImpl.INSTANCE.getAverageAuctionTime();
+		return super.toString() + "the average auction time is " + getValue();
 	}
 
 }
