@@ -49,10 +49,10 @@ public final class PasswordUtils {
     }
     
 	public static String hashPassword(String password){
-		return getHashHexString(password, "MD5", null, 1);
+		return getHashHexString(password, "MD5", null, 0);
 	}
 	
 	public static boolean matches(String plain, String hash){
-		return hash != null && hash.equals(hashPassword(plain));
+		return hash != null && hash.equalsIgnoreCase(hashPassword(plain));
 	}
 }

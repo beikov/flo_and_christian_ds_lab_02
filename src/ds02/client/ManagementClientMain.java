@@ -6,9 +6,18 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
+import ds02.client.command.AddStepCommand;
+import ds02.client.command.AutoCommand;
+import ds02.client.command.BillCommand;
 import ds02.client.command.Command;
+import ds02.client.command.HideCommand;
 import ds02.client.command.LoginCommand;
 import ds02.client.command.LogoutCommand;
+import ds02.client.command.PrintCommand;
+import ds02.client.command.RemoveStepCommand;
+import ds02.client.command.StepsCommand;
+import ds02.client.command.SubscribeCommand;
+import ds02.client.command.UnsubscribeCommand;
 
 public class ManagementClientMain {
 
@@ -53,7 +62,7 @@ public class ManagementClientMain {
 				try {
 					cmd.execute(context, commandArgs);
 				} catch (Exception ex) {
-					System.err.println(ex.getMessage());
+					ex.printStackTrace(System.err);
 				}
 			} else {
 				System.err.println("Invalid command '" + commandKey + "'");
@@ -71,7 +80,7 @@ public class ManagementClientMain {
 
 		sb.append("> ");
 
-		System.out.println(sb.toString());
+		System.out.print(sb.toString());
 		System.out.flush();
 
 		try {
@@ -84,10 +93,23 @@ public class ManagementClientMain {
 	private void assembleCommands() {
 		loggedOutCommandMap.put("!login", new LoginCommand());
 		loggedOutCommandMap.put("!logout", new LogoutCommand());
-		
+		loggedOutCommandMap.put("!subscribe", new SubscribeCommand());
+		loggedOutCommandMap.put("!unsubscribe", new UnsubscribeCommand());
+		loggedOutCommandMap.put("!print", new PrintCommand());
+		loggedOutCommandMap.put("!auto", new AutoCommand());
+		loggedOutCommandMap.put("!hide", new HideCommand());
 		
 		loggedInCommandMap.put("!login", new LoginCommand());
 		loggedInCommandMap.put("!logout", new LogoutCommand());
+		loggedInCommandMap.put("!steps", new StepsCommand());
+		loggedInCommandMap.put("!addStep", new AddStepCommand());
+		loggedInCommandMap.put("!removeStep", new RemoveStepCommand());
+		loggedInCommandMap.put("!bill", new BillCommand());
+		loggedInCommandMap.put("!subscribe", new SubscribeCommand());
+		loggedInCommandMap.put("!unsubscribe", new UnsubscribeCommand());
+		loggedInCommandMap.put("!print", new PrintCommand());
+		loggedInCommandMap.put("!auto", new AutoCommand());
+		loggedInCommandMap.put("!hide", new HideCommand());
 	}
 
 	public static void main(String[] args) {

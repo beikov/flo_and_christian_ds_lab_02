@@ -141,7 +141,11 @@ public class AnalyticsServiceImpl implements AnalyticsService {
 			@Override
 			public void handle(Event event) {
 				if (p.matcher(event.getType()).matches()) {
-					handler.handle(event);
+					try {
+						handler.handle(event);
+					} catch (RemoteException e) {
+						throw new RuntimeException(e);
+					}
 				}
 			}
 

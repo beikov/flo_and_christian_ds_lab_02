@@ -34,4 +34,12 @@ public abstract class Event implements Serializable {
 		return timeStamp;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		return sb.append(getType()).append(": ").append(new Date(getTimeStamp()).toString()).append(" - ").toString();
+	}
+	
+	
+
 }

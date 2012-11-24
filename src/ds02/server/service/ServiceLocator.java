@@ -14,41 +14,6 @@ public final class ServiceLocator {
 	private volatile BillingService billingService;
 	private volatile AnalyticsService analyticsService;
 
-	private ServiceLocator() {
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-
-			@Override
-			public void run() {
-				if (INSTANCE.billingService != null) {
-					synchronized (INSTANCE.billingLock) {
-						if (INSTANCE.billingService != null) {
-							try {
-								UnicastRemoteObject.unexportObject(
-										INSTANCE.billingService, true);
-							} catch (Exception e) {
-								// ignore error
-							}
-						}
-					}
-				}
-
-				if (INSTANCE.analyticsService != null) {
-					synchronized (INSTANCE.analyticsLock) {
-						if (INSTANCE.analyticsService != null) {
-							try {
-								UnicastRemoteObject.unexportObject(
-										INSTANCE.analyticsService, true);
-							} catch (Exception e) {
-								// ignore error
-							}
-						}
-					}
-				}
-			}
-
-		});
-	}
-
 	public BillingService getBillingService() {
 		if (billingService == null) {
 			synchronized (billingLock) {
