@@ -7,4 +7,10 @@ public class DisconnectedEvent extends UserEvent {
 		super("USER_DISCONNECTED", user);
 	}
 
+	@Override
+	public String toString() {
+		return super.toString() + " user " + getUser() + " was disconnected";
+	}
+
+	
 }

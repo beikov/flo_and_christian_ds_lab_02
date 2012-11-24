@@ -43,4 +43,6 @@ public interface StatisticsDataService {
 		public void incrementSuccessfullAuctions();
 
 		public double getAverageAuctionTime();
+
+		void incrementAuctionCount();
 }

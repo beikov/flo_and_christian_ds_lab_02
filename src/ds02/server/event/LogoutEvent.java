@@ -6,5 +6,10 @@ public class LogoutEvent extends UserEvent {
 	public LogoutEvent(String user) {
 		super("USER_LOGOUT", user);
 	}
+	
+	@Override
+	public String toString() {
+		return super.toString() + " user " + getUser() + " logged out";
+	}
 
 }

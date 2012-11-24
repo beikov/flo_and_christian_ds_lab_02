@@ -111,6 +111,10 @@ public class StatisticDataServiceImpl implements StatisticsDataService {
 	public void incrementSuccessfullAuctions() {
 		totalSuccessfullAuctions.incrementAndGet();
 	}
+	@Override
+	public void incrementAuctionCount() {
+		totalAuctionCount.incrementAndGet();
+	}
 	
 	@Override
 	public void addUserSessionTime(long sessionTime) {

@@ -8,4 +8,10 @@ public class AuctionEndedEvent extends AuctionEvent {
 		super("AUCTION_ENDED", auctionId);
 	}
 
+	@Override
+	public String toString() {
+		return super.toString() + "auction with id " + getAuctionId()
+				+ " ended";
+	}
+
 }

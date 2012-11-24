@@ -7,4 +7,8 @@ public class LoginEvent extends UserEvent {
 		super("USER_LOGIN", user);
 	}
 
+	@Override
+	public String toString() {
+		return super.toString() + " user " + getUser() + " logged in";
+	}
 }

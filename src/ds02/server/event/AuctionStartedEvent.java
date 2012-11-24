@@ -7,4 +7,10 @@ public class AuctionStartedEvent extends AuctionEvent {
 		super("AUCTION_STARTED", auctionId);
 	}
 
+	@Override
+	public String toString() {
+		return super.toString() + "auction with id " + getAuctionId()
+				+ " has started";
+	}
+
 }

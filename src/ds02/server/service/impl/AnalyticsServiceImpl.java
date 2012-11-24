@@ -77,6 +77,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
 			public void handle(Event event) {
 				auctionBegin.put(((AuctionEvent) event).getAuctionId(),
 						new Date().getTime());
+				StatisticDataServiceImpl.INSTANCE.incrementAuctionCount();
 			}
 		});
 		
@@ -102,6 +103,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
 							- auctionBegin.remove(((AuctionEvent) event)
 									.getAuctionId()));
 				}
+				
 				processEvent0(new AuctionTimeAvgEvent(
 						StatisticDataServiceImpl.INSTANCE.getAverageAuctionTime()));
 			}

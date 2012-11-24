@@ -7,4 +7,10 @@ public class BidWonEvent extends BidEvent {
 		super("BID_WON", username, auctionId, price);
 	}
 
+	@Override
+	public String toString() {
+		return super.toString() + " auction " + getAuctionId() + " won by "
+				+ getUsername() + " at a price of " + getPrice();
+	}
+
 }
