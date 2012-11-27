@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="dslab1" default="compile" basedir=".">
+<project name="dslab2" default="compile" basedir=".">
 
     <property name="src.dir" value="src"/>
+    <property name="lib.dir" value="lib"/>
     <property name="build.dir" value="build"/>
 
     <!-- You need to update these properties!-->
-    <property name="server.name" value="ds01.server.ServerMain"/><!-- Server's full class name (including the package) -->
-    <property name="server.host" value="localhost"/><!-- Server's host -->
-    <property name="client.name" value="ds01.client.ClientMain"/><!-- Client's full class name (including the package) -->
-    <property name="server.port" value="10090"/><!-- Server's TCP port -->
-    <property name="client1.port" value="10091"/><!-- 1st Client's UDP port -->
-    <property name="client2.port" value="10092"/><!-- 2nd Client's UDP port -->
-    <property name="client3.port" value="10093"/><!-- 3rd Client's UDP port -->
-    <property name="client4.port" value="10094"/><!-- 4th Client's UDP port -->
-    <property name="client5.port" value="10095"/><!-- 5th Client's UDP port -->
-    <property name="client6.port" value="10096"/><!-- 6th Client's UDP port -->
+    <property name="server.name" value="ds02.server.ServerMain"/><!-- Server's full class name (including the package) -->
+    <property name="server.host" value="localhost"/><!-- Auction Server's host -->
+    <property name="client.name" value="ds02.client.ClientMain"/><!-- Bidding Client's full class name (including the package) -->
+    <property name="mgmtclient.name" value="ds02.client.ManagementClientMain"/><!-- Management Client's full class name (including the package) -->
+    <property name="analytics.name" value="ds02.server.AnalyticsServer"/><!-- Analytics Server's full class name (including the package) -->
+    <property name="billing.name" value="ds02.server.BillingServer"/><!-- Billing Server's full class name (including the package) -->
+    <property name="analytics.bindingName" value="ds02.server.service.AnalyticsService"/><!-- RMI Binding Name of the Analytics Server -->
+    <property name="billing.bindingName" value="ds02.server.service.BillingService"/><!-- RMI Binding Name of the Billing Server -->
+    <property name="server.port" value="10060"/><!-- TCP port -->
 
     <path id="project.classpath">
         <pathelement location="${build.dir}"/>
+    	<path location="${lib.dir}"/>
     </path>
 
     <target name="compile" description="Compile project.">
@@ -30,9 +31,23 @@
         </copy>
     </target>
 
-    <target name="run-server" depends="compile" description="Run Server.">
+    <target name="run-server" depends="compile" description="Run Auction Server.">
         <java classname="${server.name}" fork="true" classpathref="project.classpath">
             <arg value="${server.port}"/>
+            <arg value="${analytics.bindingName}"/>
+            <arg value="${billing.bindingName}"/>
+        </java>
+    </target>
+
+    <target name="run-analytics-server" depends="compile" description="Run Analytics Server.">
+        <java classname="${analytics.name}" fork="true" classpathref="project.classpath">
+            <arg value="${analytics.bindingName}"/>
+        </java>
+    </target>
+
+    <target name="run-billing-server" depends="compile" description="Run Billing Server.">
+        <java classname="${billing.name}" fork="true" classpathref="project.classpath">
+            <arg value="${billing.bindingName}"/>
         </java>
     </target>
 
@@ -40,7 +55,6 @@
         <java classname="${client.name}" fork="true" classpathref="project.classpath">
             <arg value="${server.host}"/>
             <arg value="${server.port}"/>
-            <arg value="${client1.port}"/>
         </java>
     </target>
 
@@ -48,7 +62,6 @@
         <java classname="${client.name}" fork="true" classpathref="project.classpath">
             <arg value="${server.host}"/>
             <arg value="${server.port}"/>
-            <arg value="${client2.port}"/>
         </java>
     </target>
 
@@ -56,31 +69,35 @@
         <java classname="${client.name}" fork="true" classpathref="project.classpath">
             <arg value="${server.host}"/>
             <arg value="${server.port}"/>
-            <arg value="${client3.port}"/>
         </java>
     </target>
 
-    <target name="run-client4" depends="compile" description="Run 4th Client.">
-        <java classname="${client.name}" fork="true" classpathref="project.classpath">
-            <arg value="${server.host}"/>
-            <arg value="${server.port}"/>
-            <arg value="${client4.port}"/>
+    <target name="run-mgmtclient1" depends="compile" description="Run Management Client 1.">
+        <java classname="${mgmtclient.name}" fork="true" classpathref="project.classpath">
+            <arg value="${analytics.bindingName}"/>
+            <arg value="${billing.bindingName}"/>
         </java>
     </target>
 
-    <target name="run-client5" depends="compile" description="Run 5th Client.">
-        <java classname="${client.name}" fork="true" classpathref="project.classpath">
-            <arg value="${server.host}"/>
-            <arg value="${server.port}"/>
-            <arg value="${client5.port}"/>
+    <target name="run-mgmtclient2" depends="compile" description="Run Management Client 2.">
+        <java classname="${mgmtclient.name}" fork="true" classpathref="project.classpath">
+            <arg value="${analytics.bindingName}"/>
+            <arg value="${billing.bindingName}"/>
         </java>
     </target>
 
-    <target name="run-client6" depends="compile" description="Run 6th Client.">
+    <target name="run-mgmtclient3" depends="compile" description="Run Management Client 3.">
+        <java classname="${mgmtclient.name}" fork="true" classpathref="project.classpath">
+            <arg value="${analytics.bindingName}"/>
+            <arg value="${billing.bindingName}"/>
+        </java>
+    </target>
+
+    <target name="run-loadtest" depends="compile" description="Run Load Test.">
         <java classname="${client.name}" fork="true" classpathref="project.classpath">
             <arg value="${server.host}"/>
             <arg value="${server.port}"/>
-            <arg value="${client6.port}"/>
+            <arg value="${analytics.bindingName}"/>
         </java>
     </target>
 
@@ -88,5 +105,6 @@
         <delete dir="${build.dir}"/>
     </target>
 
-    <target name="rebuild" depends="clean, compile" description="Clean and build prject."/>
+    <target name="rebuild" depends="clean, compile" description="Clean and build project."/>
 </project>
+
