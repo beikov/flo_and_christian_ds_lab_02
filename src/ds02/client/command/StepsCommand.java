@@ -10,7 +10,9 @@ public class StepsCommand implements Command {
 
 	@Override
 	public void execute(UserContext context, String[] args) {
-
+		if(args.length != 0) {
+			throw new RuntimeException("Usage: !steps");
+		}
 		try {
 			DecimalFormat decimalFormat = new DecimalFormat(".0");
 			System.out.println("Min_Price Max_Price Fee_Fixed Fee_Variable");

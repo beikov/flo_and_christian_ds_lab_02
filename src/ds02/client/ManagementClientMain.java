@@ -64,10 +64,11 @@ public class ManagementClientMain implements Client {
 				try {
 					cmd.execute(context, commandArgs);
 				} catch (Exception ex) {
-					ex.printStackTrace(System.err);
+					System.err.println(ex.getMessage());
+					//ex.printStackTrace(System.err);
 				}
 			} else {
-				System.err.println("Invalid command '" + commandKey + "'");
+				System.err.println("ERROR: Invalid command '" + commandKey + "'");
 			}
 		}
 
@@ -127,7 +128,7 @@ public class ManagementClientMain implements Client {
 	}
 
 	private static void usage() {
-		System.out.println("Usage: "
+		System.err.println("Usage: "
 				+ ManagementClientMain.class.getSimpleName()
 				+ " <analyticsServerBinding> <billingServerBinding>");
 		System.exit(1);

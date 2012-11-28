@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import ds02.server.exception.PriceStepException;
 import ds02.server.model.Bill;
 import ds02.server.model.BillLine;
 import ds02.server.model.PriceStep;
@@ -36,22 +37,22 @@ public class BillingServiceSecureImpl implements BillingServiceSecure {
 	@Override
 	public void createPriceStep(double startPrice, double endPrice,
 			double fixedPrice, double variablePricePercent)
-			throws RemoteException {
+			throws RemoteException, PriceStepException {
 		if (startPrice < 0) {
-			throw new RemoteException("Start price may not be negative");
+			throw new PriceStepException("Start price may not be negative");
 		}
 		if (endPrice < 0) {
-			throw new RemoteException("End price may not be negative");
+			throw new PriceStepException("End price may not be negative");
 		}
 		if (fixedPrice < 0) {
-			throw new RemoteException("Fixed price may not be negative");
+			throw new PriceStepException("Fixed price may not be negative");
 		}
 		if (variablePricePercent < 0) {
-			throw new RemoteException(
+			throw new PriceStepException(
 					"Variable price percent may not be negative");
 		}
 		if (startPrice > endPrice) {
-			throw new RemoteException(
+			throw new PriceStepException(
 					"Start price must be lower than end price");
 		}
 
@@ -65,10 +66,10 @@ public class BillingServiceSecureImpl implements BillingServiceSecure {
 			final PriceStep higher = priceSteps.higher(step);
 
 			if (lower != null && lower.getEndPrice() > step.getStartPrice()) {
-				throw new IllegalArgumentException("Overlapping price steps");
+				throw new PriceStepException("Overlapping price steps");
 			}
 			if (higher != null && higher.getStartPrice() < step.getEndPrice()) {
-				throw new IllegalArgumentException("Overlapping price steps");
+				throw new PriceStepException("Overlapping price steps");
 			}
 
 			priceSteps.add(step);
@@ -82,15 +83,15 @@ public class BillingServiceSecureImpl implements BillingServiceSecure {
 
 	@Override
 	public void deletePriceStep(double startPrice, double endPrice)
-			throws RemoteException {
+			throws RemoteException, PriceStepException {
 		if (startPrice < 0) {
-			throw new RemoteException("Start price may not be negative");
+			throw new PriceStepException("Start price may not be negative");
 		}
 		if (endPrice < 0) {
-			throw new RemoteException("End price may not be negative");
+			throw new PriceStepException("End price may not be negative");
 		}
 		if (startPrice > endPrice) {
-			throw new RemoteException(
+			throw new PriceStepException(
 					"Start price must be lower than end price");
 		}
 
@@ -99,7 +100,7 @@ public class BillingServiceSecureImpl implements BillingServiceSecure {
 		lock.writeLock().lock();
 		try {
 			if (!priceSteps.remove(step)) {
-				throw new RemoteException(
+				throw new PriceStepException(
 						"The specified interval does not match an existing price step interval");
 			}
 		} finally {

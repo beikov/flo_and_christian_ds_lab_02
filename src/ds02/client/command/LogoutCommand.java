@@ -6,6 +6,9 @@ public class LogoutCommand implements Command {
 
 	@Override
 	public void execute(UserContext context, String[] args) {
+		if(args.length != 0) {
+			throw new RuntimeException("Usage: !logout");
+		}
 		if (!context.isLoggedIn()) {
 			System.out.println("You have to log in first!");
 		} else {

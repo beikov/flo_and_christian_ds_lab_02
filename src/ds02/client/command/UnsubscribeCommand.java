@@ -10,7 +10,7 @@ public class UnsubscribeCommand implements Command {
 	@Override
 	public void execute(UserContext context, String[] args) {
 		if (args.length != 1) {
-			throw new RuntimeException("Dummkopf!");
+			throw new RuntimeException("Usage: !unsubscribe <subscriptionID>");
 		}
 
 		try {

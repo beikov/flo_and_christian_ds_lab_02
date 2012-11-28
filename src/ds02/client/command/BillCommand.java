@@ -16,7 +16,7 @@ public class BillCommand implements Command {
 		try {
 			Bill bill = context.getBillingServiceSecure().getBill(args[0]);
 			if (bill == null) {
-				System.out.println("ERROR: No bills for user " + args[0]
+				System.out.println("No bills for user " + args[0]
 						+ " exist");
 				return;
 			}
