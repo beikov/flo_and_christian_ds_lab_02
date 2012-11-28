@@ -9,8 +9,6 @@ import ds02.server.command.CreateCommand;
 import ds02.server.command.ListCommand;
 import ds02.server.command.LoginCommand;
 import ds02.server.command.LogoutCommand;
-import ds02.server.event.DisconnectedEvent;
-import ds02.server.event.EventHandler;
 import ds02.server.service.AuctionService;
 import ds02.server.service.UserService;
 
@@ -24,7 +22,7 @@ public class ClientHandler implements Runnable {
 
 	static {
 		final Command loginCommand = new LoginCommand(UserService.INSTANCE);
-		logoutCommand = new LogoutCommand(UserService.INSTANCE);
+		logoutCommand = new LogoutCommand();
 
 		loggedOutCommandMap.put("!login", loginCommand);
 		loggedOutCommandMap.put("!logout", logoutCommand);
@@ -43,20 +41,6 @@ public class ClientHandler implements Runnable {
 
 	public ClientHandler(final UserConnection userConnection) {
 		this.userConnection = userConnection;
-		this.userConnection
-				.addCloseListener(new EventHandler<DisconnectedEvent>() {
-					@Override
-					public void handle(DisconnectedEvent event) {
-						/*
-						 * We do the logout here directly so we don't have to
-						 * pass anything to the logout command that would
-						 * supress the response.
-						 */
-						UserService.INSTANCE.logout(userConnection
-								.getUsername());
-						userConnection.logout();
-					}
-				});
 	}
 
 	public void stop() {

@@ -51,8 +51,8 @@ public class StatisticDataServiceImpl implements StatisticsDataService {
 
 	@Override
 	public double getBidCountPerMinute() {
-		return (totalBidCount.get() / (new Date().getTime() - startTime
-				.getTime()));
+		return (totalBidCount.get() / ((new Date().getTime() - startTime
+				.getTime()) / 60000));
 	}
 
 	@Override
@@ -89,7 +89,17 @@ public class StatisticDataServiceImpl implements StatisticsDataService {
 
 	@Override
 	public void addBid(double bidAmount) {
-		highestBid.compareAndSet(highestBid.get(), bidAmount);
+		while (true) {
+			double maxBid = highestBid.get();
+			if (bidAmount > maxBid) {
+				if (highestBid.compareAndSet(maxBid, bidAmount)) {
+					break;
+				}
+
+			} else {
+				break;
+			}
+		}
 	}
 
 	@Override
@@ -128,15 +138,19 @@ public class StatisticDataServiceImpl implements StatisticsDataService {
 					break;
 				}
 
+			} else {
+				break;
 			}
 		}
 		while (true) {
-			long maxUTime = minUserTime.get();
+			long maxUTime = maxUserTime.get();
 			if (sessionTime > maxUTime) {
 				if (maxUserTime.compareAndSet(maxUTime, sessionTime)) {
 					break;
 				}
 
+			} else {
+				break;
 			}
 		}
 		totalSessionTime.addAndGet(sessionTime);
@@ -147,6 +161,7 @@ public class StatisticDataServiceImpl implements StatisticsDataService {
 		totalBidCount.incrementAndGet();
 	}
 
+	@Override
 	public void incrementSessionCount() {
 		totalSessionCount.incrementAndGet();
 	}

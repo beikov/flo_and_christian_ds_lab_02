@@ -38,4 +38,11 @@ public class AuctionRemoveTask extends TimerTask {
 		}
 
 	}
+
+	@Override
+	public boolean cancel() {
+		boolean result = super.cancel();
+		taskQueue.clear();
+		return result;
+	}
 }

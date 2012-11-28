@@ -76,6 +76,9 @@ public class ServerMain {
 								serverSocket.accept());
 						final ClientHandler handler = new ClientHandler(
 								connection);
+
+						clientHandlers.put(handler, new Object());
+
 						connection
 								.addCloseListener(new EventHandler<DisconnectedEvent>() {
 
@@ -85,7 +88,7 @@ public class ServerMain {
 									}
 
 								});
-						clientHandlers.put(handler, new Object());
+
 						threadPool.execute(handler);
 					} catch (Exception ex) {
 						// Don't care about the errors since logging is not
@@ -123,7 +126,7 @@ public class ServerMain {
 					iter.remove();
 				}
 
-				AuctionService.REMOVE_TASK.cancel();
+				timer.cancel();
 			}
 		};
 

@@ -1,7 +1,9 @@
 package ds02.server.service.impl;
 
 import java.rmi.RemoteException;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -15,7 +17,6 @@ import ds02.server.event.BidEvent;
 import ds02.server.event.BidPriceMaxEvent;
 import ds02.server.event.Event;
 import ds02.server.event.EventCallback;
-import ds02.server.event.EventHandler;
 import ds02.server.event.UserEvent;
 import ds02.server.event.UserSessiontimeAvgEvent;
 import ds02.server.event.UserSessiontimeMaxEvent;
@@ -25,12 +26,42 @@ import ds02.server.service.AnalyticsService;
 public class AnalyticsServiceImpl implements AnalyticsService {
 
 	private static final long serialVersionUID = 1L;
-	private final ConcurrentMap<String, EventHandler<Event>> subscrptions = new ConcurrentHashMap<String, EventHandler<Event>>();
+	private final Map<String, ConcurrentMap<String, EventCallback>> eventMap = new HashMap<String, ConcurrentMap<String, EventCallback>>();
 	private final ConcurrentMap<String, Long> startValue = new ConcurrentHashMap<String, Long>();
 	private final ConcurrentMap<Long, Long> auctionBegin = new ConcurrentHashMap<Long, Long>();
 	private final AtomicLong subscribeSequence = new AtomicLong();
 
 	public AnalyticsServiceImpl() {
+		eventMap.put("USER_LOGIN",
+				new ConcurrentHashMap<String, EventCallback>());
+		eventMap.put("USER_LOGOUT",
+				new ConcurrentHashMap<String, EventCallback>());
+		eventMap.put("USER_DISCONNECTED",
+				new ConcurrentHashMap<String, EventCallback>());
+		eventMap.put("USER_SESSIONTIME_MIN",
+				new ConcurrentHashMap<String, EventCallback>());
+		eventMap.put("USER_SESSIONTIME_MAX",
+				new ConcurrentHashMap<String, EventCallback>());
+		eventMap.put("USER_SESSIONTIME_AVG",
+				new ConcurrentHashMap<String, EventCallback>());
+		eventMap.put("AUCTION_STARTED",
+				new ConcurrentHashMap<String, EventCallback>());
+		eventMap.put("AUCTION_ENDED",
+				new ConcurrentHashMap<String, EventCallback>());
+		eventMap.put("AUCTION_SUCCESS_RATIO",
+				new ConcurrentHashMap<String, EventCallback>());
+		eventMap.put("AUCTION_TIME_AVG",
+				new ConcurrentHashMap<String, EventCallback>());
+		eventMap.put("BID_WON", new ConcurrentHashMap<String, EventCallback>());
+		eventMap.put("BID_PLACED",
+				new ConcurrentHashMap<String, EventCallback>());
+		eventMap.put("BID_PRICE_MAX",
+				new ConcurrentHashMap<String, EventCallback>());
+		eventMap.put("BID_OVERBID",
+				new ConcurrentHashMap<String, EventCallback>());
+		eventMap.put("BID_COUNT_PER_MINUTE",
+				new ConcurrentHashMap<String, EventCallback>());
+
 		subscribe0("USER_LOGIN", new EventCallback() {
 
 			@Override
@@ -41,7 +72,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
 
 			}
 		});
-		subscribe0("(USER_LOGGOUT|USER_DISCONNECTED)", new EventCallback() {
+		subscribe0("(USER_LOGOUT|USER_DISCONNECTED)", new EventCallback() {
 
 			@Override
 			public void handle(Event event) {
@@ -134,27 +165,16 @@ public class AnalyticsServiceImpl implements AnalyticsService {
 	private String subscribe0(final String pattern, final EventCallback handler) {
 
 		final Pattern p = Pattern.compile(pattern);
+		final String id = Long.toString(subscribeSequence.incrementAndGet());
 
-		String uuid = null;
-		EventHandler<Event> wrappedHandler = new EventHandler<Event>() {
-
-			@Override
-			public void handle(Event event) {
-				if (p.matcher(event.getType()).matches()) {
-					try {
-						handler.handle(event);
-					} catch (RemoteException e) {
-						throw new RuntimeException(e);
-					}
-				}
+		for (Map.Entry<String, ConcurrentMap<String, EventCallback>> entry : eventMap
+				.entrySet()) {
+			if (p.matcher(entry.getKey()).matches()) {
+				entry.getValue().put(id, handler);
 			}
+		}
 
-		};
-
-		subscrptions.put((uuid = "" + subscribeSequence.incrementAndGet()),
-				wrappedHandler);
-
-		return uuid;
+		return id;
 	}
 
 	@Override
@@ -163,13 +183,14 @@ public class AnalyticsServiceImpl implements AnalyticsService {
 	}
 
 	private void processEvent0(Event event) {
-		Iterator<EventHandler<Event>> it = subscrptions.values().iterator();
+		Iterator<EventCallback> it = eventMap.get(event.getType()).values()
+				.iterator();
 
 		while (it.hasNext()) {
-			final EventHandler<Event> eventHandler = it.next();
-			try {
-				eventHandler.handle(event);
+			final EventCallback eventCallback = it.next();
 
+			try {
+				eventCallback.handle(event);
 			} catch (Exception e) {
 				/* Remove the eventhandler as soon it is no longer available */
 				it.remove();
@@ -179,7 +200,10 @@ public class AnalyticsServiceImpl implements AnalyticsService {
 
 	@Override
 	public void unsubscribe(String identifier) throws RemoteException {
-		subscrptions.remove(identifier);
+		for (Map.Entry<String, ConcurrentMap<String, EventCallback>> entry : eventMap
+				.entrySet()) {
+			entry.getValue().remove(identifier);
+		}
 	}
 
 	@Override

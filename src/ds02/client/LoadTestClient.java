@@ -99,8 +99,8 @@ public class LoadTestClient implements Client {
 
 						try {
 							Thread.sleep(sleepTime);
-						} catch (Exception ex) {
-							ex.printStackTrace();
+						} catch (InterruptedException ex) {
+							// We got woke up :D
 						}
 					}
 
@@ -110,7 +110,14 @@ public class LoadTestClient implements Client {
 			});
 
 		}
-		
+
+		RuntimeUtils.addShutdownHook(new Runnable() {
+			
+			@Override
+			public void run() {
+				threadPool.shutdownNow();
+			}
+		});
 		RuntimeUtils.waitForExitCommand();
 	}
 

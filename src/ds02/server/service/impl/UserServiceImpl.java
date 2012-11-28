@@ -4,6 +4,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import ds02.server.UserConnection;
+import ds02.server.event.EventHandler;
 import ds02.server.event.LoginEvent;
 import ds02.server.event.LogoutEvent;
 import ds02.server.event.handler.DefaultEventHandler;
@@ -37,6 +38,14 @@ public class UserServiceImpl implements UserService {
 
 		if (users.putIfAbsent(username, userConnection) == null) {
 			DefaultEventHandler.INSTANCE.handle(new LoginEvent(username));
+			userConnection.addLogoutListener(new EventHandler<LogoutEvent>() {
+
+				@Override
+				public void handle(LogoutEvent event) {
+					UserServiceImpl.this.logout(event.getUser());
+				}
+			});
+
 			return true;
 		}
 		return false;

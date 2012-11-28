@@ -19,6 +19,7 @@ import ds02.client.command.StepsCommand;
 import ds02.client.command.SubscribeCommand;
 import ds02.client.command.UnsubscribeCommand;
 import ds02.server.service.ServiceLocator;
+import ds02.server.util.RuntimeUtils;
 
 public class ManagementClientMain implements Client {
 
@@ -69,6 +70,8 @@ public class ManagementClientMain implements Client {
 				System.err.println("Invalid command '" + commandKey + "'");
 			}
 		}
+		
+		RuntimeUtils.invokeShutdownHooks();
 	}
 
 	private String readRequest() {

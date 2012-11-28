@@ -140,13 +140,14 @@ public class UserConnection {
 					t = ex;
 				}
 
-				/*
-				 * Always remove the handlers, otherwise we will create a memory
-				 * leak
-				 */
-				onClose.removeHandlers();
 				username = null;
 			}
+
+			/*
+			 * Always remove the handlers, otherwise we will create a memory
+			 * leak
+			 */
+			onClose.removeHandlers();
 
 			try {
 				tcpSocket.close();

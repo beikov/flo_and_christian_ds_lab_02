@@ -9,9 +9,37 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public final class RuntimeUtils {
 
 	private static final Queue<Runnable> SHUTDOWN_HOOKS = new ConcurrentLinkedQueue<Runnable>();
+	
+	static{
+		Runtime.getRuntime().addShutdownHook(new Thread(){
+
+			@Override
+			public void run() {
+				invokeShutdownHooks();
+			}
+			
+		});
+	}
 
 	private RuntimeUtils() {
 
+	}
+	
+	public static void invokeShutdownHooks(){
+		Iterator<Runnable> it = SHUTDOWN_HOOKS.iterator();
+
+		while (it.hasNext()) {
+
+			final Runnable r = it.next();
+
+			try {
+				r.run();
+			} catch (Exception e) {
+				e.printStackTrace(System.err);
+			}
+
+			it.remove();
+		}
 	}
 
 	public static void addShutdownHook(Runnable r) {
@@ -30,21 +58,6 @@ public final class RuntimeUtils {
 				// ignore
 			}
 		} while (!"!exit".equals(input) && input != null);
-
-		Iterator<Runnable> it = SHUTDOWN_HOOKS.iterator();
-
-		while (it.hasNext()) {
-
-			final Runnable r = it.next();
-
-			try {
-				r.run();
-			} catch (Exception e) {
-				e.printStackTrace(System.err);
-			}
-
-			it.remove();
-		}
-		// System.exit(0);
+		invokeShutdownHooks();
 	}
 }

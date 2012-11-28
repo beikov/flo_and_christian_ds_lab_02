@@ -81,7 +81,7 @@ public class ClientMain implements Client {
 					 * If no args are given, pass empty argument to get the
 					 * right error message
 					 */
- 					if (commandParts.length < 2) {
+					if (commandParts.length < 2) {
 						socketWriter.write(' ');
 					}
 

@@ -28,8 +28,6 @@ public class SubscribeCommand implements Command {
 			ServiceLocator.INSTANCE.getAnalyticsService()
 					.subscribe(args[0], ec);
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 

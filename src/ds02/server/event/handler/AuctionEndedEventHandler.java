@@ -2,6 +2,8 @@ package ds02.server.event.handler;
 
 import java.rmi.RemoteException;
 
+import org.apache.log4j.Logger;
+
 import ds02.server.event.AuctionEndedEvent;
 import ds02.server.event.BidWonEvent;
 import ds02.server.model.Auction;
@@ -11,6 +13,8 @@ import ds02.server.service.ServiceLocator;
 
 public class AuctionEndedEventHandler extends
 		AbstractEventHandler<AuctionEndedEvent> {
+	
+	private static final Logger LOG = Logger.getLogger(AuctionEndedEventHandler.class);
 
 	@Override
 	public void handle(AuctionEndedEvent event) {
@@ -32,7 +36,7 @@ public class AuctionEndedEventHandler extends
 			billingServiceSecure.billAuction(auction.getUser(),
 					event.getAuctionId(), auction.getBidValue().doubleValue());
 		} catch (RemoteException e) {
-			e.printStackTrace();
+			LOG.warn("BillingService is not reachable!");
 		}
 
 	}
