@@ -11,18 +11,22 @@ public class BillCommand implements Command {
 	@Override
 	public void execute(UserContext context, String[] args) {
 		if (args.length != 1) {
-			throw new RuntimeException("Dummkopf!");
+			throw new RuntimeException("Usage: !bill <username>");
 		}
 		try {
 			Bill bill = context.getBillingServiceSecure().getBill(args[0]);
+			if (bill == null) {
+				System.out.println("ERROR: No bills for user " + args[0]
+						+ " exist");
+				return;
+			}
 			System.out
 					.println("auction_ID strike_price fee_fixed fee_variable fee_total");
 			for (BillLine billLine : bill.getBillLines()) {
-				System.out.format("%.0d %.0f %.0f %.1f %.1f",
+				System.out.format("%-11d%-13.0f%-10.1f%-13.1f%-9.1f%n",
 						billLine.getAuctionId(), billLine.getStrikePrice(),
 						billLine.getFeeFixed(), billLine.getFeeVariable(),
 						billLine.getFeeTotal());
-				System.out.println("%");
 			}
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block

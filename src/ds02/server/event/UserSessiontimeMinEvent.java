@@ -9,8 +9,8 @@ public class UserSessiontimeMinEvent extends StatisticsEvent {
 
 	@Override
 	public String toString() {
-		return super.toString() + "average session time is " + getValue()
-				+ " seconds";
+		return super.toString() + "minimum session time is " + getValue()
+				/ 1000 + " seconds";
 	}
 
 }

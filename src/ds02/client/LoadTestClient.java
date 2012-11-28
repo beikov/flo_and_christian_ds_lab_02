@@ -112,7 +112,7 @@ public class LoadTestClient implements Client {
 		}
 
 		RuntimeUtils.addShutdownHook(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				threadPool.shutdownNow();

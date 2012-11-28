@@ -7,7 +7,8 @@ public class AddStepCommand implements Command {
 	@Override
 	public void execute(UserContext context, String[] args) {
 		if (args.length != 4) {
-			throw new RuntimeException("Dummkopf!");
+			throw new RuntimeException(
+					"Usage: !addStep <startPrice> <endPrice> <fixedPrice> <variablePricePercent>");
 		}
 
 		double startPrice = Double.parseDouble(args[0]);

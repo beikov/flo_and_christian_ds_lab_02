@@ -10,7 +10,7 @@ public class UserSessiontimeMaxEvent extends StatisticsEvent {
 	@Override
 	public String toString() {
 		return super.toString() + "maximum session time is " + getValue()
-				+ " seconds";
+				/ 1000 + " seconds";
 	}
 
 }

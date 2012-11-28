@@ -1,6 +1,7 @@
 package ds02.client.command;
 
 import java.rmi.RemoteException;
+import java.text.DecimalFormat;
 
 import ds02.client.UserContext;
 import ds02.server.model.PriceStep;
@@ -11,19 +12,20 @@ public class StepsCommand implements Command {
 	public void execute(UserContext context, String[] args) {
 
 		try {
+			DecimalFormat decimalFormat = new DecimalFormat(".0");
 			System.out.println("Min_Price Max_Price Fee_Fixed Fee_Variable");
 			for (PriceStep priceStep : context.getBillingServiceSecure()
 					.getPriceSetps().getPriceSteps()) {
 				System.out
-						.format("%.0f\t  %s"
+						.format("%-10.0f%-10s"
 								+ (priceStep.getEndPrice() == Double.POSITIVE_INFINITY ? ""
-										: "\t   ") + " %.1f     %.1f",
+										: "") + "%-10.1f%-12s%n",
 								priceStep.getStartPrice(),
 								(priceStep.getEndPrice() == Double.POSITIVE_INFINITY ? "INIFINITY"
 										: (int) priceStep.getEndPrice()),
-								priceStep.getFixedPrice(), priceStep
-										.getVariablePricePercent());
-				System.out.println("%");
+								priceStep.getFixedPrice(),
+								decimalFormat.format(priceStep
+										.getVariablePricePercent()) + "%");
 			}
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block

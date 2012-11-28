@@ -10,8 +10,9 @@ import ds02.server.service.ServiceLocator;
 
 public abstract class AbstractEventHandler<T extends Event> implements
 		EventHandler<T> {
-	
-	private static final Logger LOG = Logger.getLogger(AbstractEventHandler.class);
+
+	private static final Logger LOG = Logger
+			.getLogger(AbstractEventHandler.class);
 
 	@Override
 	public void handle(T event) {

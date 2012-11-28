@@ -25,8 +25,10 @@ public class SubscribeCommand implements Command {
 		});
 
 		try {
-			ServiceLocator.INSTANCE.getAnalyticsService()
-					.subscribe(args[0], ec);
+			String subscriptionID = ServiceLocator.INSTANCE
+					.getAnalyticsService().subscribe(args[0], ec);
+			System.out.println("Created subscription with ID " + subscriptionID
+					+ " for events using filter '" + args[0] + "'");
 		} catch (RemoteException e) {
 		}
 	}

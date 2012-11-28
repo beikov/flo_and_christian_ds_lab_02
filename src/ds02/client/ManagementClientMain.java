@@ -70,7 +70,7 @@ public class ManagementClientMain implements Client {
 				System.err.println("Invalid command '" + commandKey + "'");
 			}
 		}
-		
+
 		RuntimeUtils.invokeShutdownHooks();
 	}
 

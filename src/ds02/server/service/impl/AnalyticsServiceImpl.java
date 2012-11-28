@@ -90,7 +90,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
 								.getMinUserSessionTime()));
 				processEvent0(new UserSessiontimeMaxEvent(
 						StatisticDataServiceImpl.INSTANCE
-								.getLongestUserSessionTime()));
+								.getMaxUserSessionTime()));
 				processEvent0(new UserSessiontimeAvgEvent(
 						StatisticDataServiceImpl.INSTANCE
 								.getAverageUserSessionTime()));
@@ -112,7 +112,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
 			@Override
 			public void handle(Event event) {
 				StatisticDataServiceImpl.INSTANCE
-						.incrementSuccessfullAuctions();
+						.incrementSuccessfulAuctionCount();
 
 				processEvent0(new AuctionSuccessRatioEvent(
 						StatisticDataServiceImpl.INSTANCE
@@ -126,7 +126,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
 			public void handle(Event event) {
 				if (auctionBegin.containsKey(((AuctionEvent) event)
 						.getAuctionId())) {
-					StatisticDataServiceImpl.INSTANCE.addFinishedAuction(event
+					StatisticDataServiceImpl.INSTANCE.addAuctionDuration(event
 							.getTimeStamp()
 							- auctionBegin.remove(((AuctionEvent) event)
 									.getAuctionId()));
@@ -135,6 +135,9 @@ public class AnalyticsServiceImpl implements AnalyticsService {
 				processEvent0(new AuctionTimeAvgEvent(
 						StatisticDataServiceImpl.INSTANCE
 								.getAverageAuctionTime()));
+				processEvent0(new AuctionSuccessRatioEvent(
+						StatisticDataServiceImpl.INSTANCE
+								.getAuctionSuccessRatio()));
 			}
 		});
 
@@ -143,11 +146,11 @@ public class AnalyticsServiceImpl implements AnalyticsService {
 			@Override
 			public void handle(Event event) {
 				StatisticDataServiceImpl.INSTANCE.incrementBidCount();
-				StatisticDataServiceImpl.INSTANCE.addBid(((BidEvent) event)
-						.getPrice());
+				StatisticDataServiceImpl.INSTANCE
+						.offerHighestBid(((BidEvent) event).getPrice());
 
 				processEvent0(new BidPriceMaxEvent(
-						StatisticDataServiceImpl.INSTANCE.getMaxBidPrice()));
+						StatisticDataServiceImpl.INSTANCE.getHighestBid()));
 				processEvent0(new BidCountPerMinuteEvent(
 						StatisticDataServiceImpl.INSTANCE
 								.getBidCountPerMinute()));

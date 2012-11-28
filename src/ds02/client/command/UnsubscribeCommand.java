@@ -15,6 +15,7 @@ public class UnsubscribeCommand implements Command {
 
 		try {
 			ServiceLocator.INSTANCE.getAnalyticsService().unsubscribe(args[0]);
+			System.out.println("subscription " + args[0] + " terminated");
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			// e.printStackTrace();
