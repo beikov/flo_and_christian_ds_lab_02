@@ -192,7 +192,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
 			try {
 				eventCallback.handle(event);
 			} catch (Exception e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 				/* Remove the eventhandler as soon it is no longer available */
 				it.remove();
 			}

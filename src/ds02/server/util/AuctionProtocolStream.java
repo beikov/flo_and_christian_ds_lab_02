@@ -1,5 +1,7 @@
 package ds02.server.util;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -10,8 +12,8 @@ public class AuctionProtocolStream {
 	private final InputStream in;
 	
 	public AuctionProtocolStream(OutputStream out, InputStream in) {
-		this.out = out;
-		this.in = in;
+		this.out = new BufferedOutputStream(out);
+		this.in = new BufferedInputStream(in);
 	}
 
 	public void write(String response) {

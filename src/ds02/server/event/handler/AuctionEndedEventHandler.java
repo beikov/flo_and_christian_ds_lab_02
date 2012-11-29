@@ -19,8 +19,6 @@ public class AuctionEndedEventHandler extends
 
 	@Override
 	public void handle(AuctionEndedEvent event) {
-		super.handle(event);
-
 		Auction auction = AuctionService.INSTANCE.getAuction(event
 				.getAuctionId());
 
@@ -29,6 +27,8 @@ public class AuctionEndedEventHandler extends
 					.getBidUser(), auction.getId(), auction.getBidValue()
 					.doubleValue()));
 		}
+		
+		super.handle(event);
 
 		try {
 			BillingServiceSecure billingServiceSecure = ServiceLocator.INSTANCE

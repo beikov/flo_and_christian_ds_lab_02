@@ -1,5 +1,7 @@
 package ds02.server.util;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -9,14 +11,15 @@ import java.io.PrintStream;
 
 public class PipedClientConsole extends ClientConsole {
 	
-	private final PipedOutputStream os;
+	private final OutputStream os;
 	private final InputStream is;
 	
 	public PipedClientConsole() {
-		this.os = new PipedOutputStream();
+		PipedOutputStream pos = new PipedOutputStream();
 		
 		try{
-			this.is = new PipedInputStream(os);
+			this.os = new BufferedOutputStream(pos);
+			this.is = new BufferedInputStream(new PipedInputStream(pos));
 		}catch(IOException e){
 			throw new RuntimeException(e);
 		}

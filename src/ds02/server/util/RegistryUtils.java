@@ -59,13 +59,14 @@ public final class RegistryUtils {
 			Registry r = null;
 
 			try {
-				r = LocateRegistry.createRegistry(port);
+				r = LocateRegistry.getRegistry(host, port);
+				r.list();
 			} catch (Exception e) {
-
+				r = null;
 			}
 
 			if (r == null) {
-				r = LocateRegistry.getRegistry(host, port);
+				r = LocateRegistry.createRegistry(port);
 			}
 			return r;
 		} catch (Exception e) {

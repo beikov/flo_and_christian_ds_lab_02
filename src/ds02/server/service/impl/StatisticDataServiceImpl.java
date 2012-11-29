@@ -11,7 +11,7 @@ public class StatisticDataServiceImpl implements StatisticsDataService {
 
 	private final AtomicLong totalSessionTime = new AtomicLong();
 	private final AtomicLong totalSessionCount = new AtomicLong();
-	private final AtomicLong minUserSessionTime = new AtomicLong();
+	private final AtomicLong minUserSessionTime = new AtomicLong(Long.MAX_VALUE);
 	private final AtomicLong maxUserSessionTime = new AtomicLong();
 
 	private final AtomicLong totalAuctionTime = new AtomicLong();

@@ -98,8 +98,10 @@ public class LoadTestClient implements Client {
 
 		public synchronized String command(String command) {
 			/* Read the prompt */
+			String prompt;
+			
 			try {
-				in.read();
+				prompt = in.read();
 			} catch (Exception ex) {
 				throw new RuntimeException(ex);
 			}
@@ -107,11 +109,15 @@ public class LoadTestClient implements Client {
 			out.println(command);
 			out.flush();
 
+			String result;
+			
 			try {
-				return in.read();
+				result = in.read();
 			} catch (Exception ex) {
 				throw new RuntimeException(ex);
 			}
+			
+			return result;
 		}
 	}
 
