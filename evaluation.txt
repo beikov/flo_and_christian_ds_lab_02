@@ -24,3 +24,5 @@ HDD: 256 GB SSD Agility 4
 
 
 === Results ===
+
+Hauptserver benötigt am meisten Speicher.

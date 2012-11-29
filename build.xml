@@ -18,7 +18,7 @@
 
     <path id="project.classpath">
         <pathelement location="${build.dir}"/>
-    	<path location="${lib.dir}"/>
+    	<fileset dir="${lib.dir}" includes="**/*.jar"/>
     </path>
 
     <target name="compile" description="Compile project.">

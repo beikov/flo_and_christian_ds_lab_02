@@ -1,9 +1,8 @@
 package ds02.server.service;
 
-import java.rmi.RemoteException;
+import java.lang.reflect.Proxy;
 
-import ds02.server.util.Pingable;
-import ds02.server.util.RegistryUtils;
+import ds02.server.util.ReconnectInterceptor;
 
 public final class ServiceLocator {
 
@@ -29,11 +28,13 @@ public final class ServiceLocator {
 	}
 
 	public BillingService getBillingService() {
-		if (billingService == null || notConnected(billingService)) {
+		if (billingService == null) {
 			synchronized (billingLock) {
-				if (billingService == null || notConnected(billingService)) {
-					billingService = RegistryUtils
-							.getRemote(billingServiceName);
+				if (billingService == null) {
+					billingService = (BillingService) Proxy.newProxyInstance(
+							BillingService.class.getClassLoader(),
+							new Class[] { BillingService.class },
+							new ReconnectInterceptor(billingServiceName));
 				}
 			}
 		}
@@ -41,24 +42,17 @@ public final class ServiceLocator {
 	}
 
 	public AnalyticsService getAnalyticsService() {
-		if (analyticsService == null || notConnected(analyticsService)) {
+		if (analyticsService == null) {
 			synchronized (analyticsLock) {
-				if (analyticsService == null || notConnected(analyticsService)) {
-					analyticsService = RegistryUtils
-							.getRemote(analyticsServiceName);
+				if (analyticsService == null) {
+					analyticsService = (AnalyticsService) Proxy.newProxyInstance(
+							AnalyticsService.class.getClassLoader(),
+							new Class[] { AnalyticsService.class },
+							new ReconnectInterceptor(analyticsServiceName));
 				}
 			}
 		}
 		return analyticsService;
-	}
-
-	private boolean notConnected(Pingable p) {
-		try {
-			p.ping();
-			return false;
-		} catch (RemoteException e) {
-			return true;
-		}
 	}
 
 }

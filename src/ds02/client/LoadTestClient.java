@@ -1,24 +1,18 @@
 package ds02.client;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
-import java.util.Timer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -98,26 +92,20 @@ public class LoadTestClient implements Client {
 
 		public synchronized String command(String command) {
 			/* Read the prompt */
-			String prompt;
-			
 			try {
-				prompt = in.read();
+				in.read();
 			} catch (Exception ex) {
 				throw new RuntimeException(ex);
 			}
 
 			out.println(command);
 			out.flush();
-
-			String result;
 			
 			try {
-				result = in.read();
+				return in.read();
 			} catch (Exception ex) {
 				throw new RuntimeException(ex);
 			}
-			
-			return result;
 		}
 	}
 

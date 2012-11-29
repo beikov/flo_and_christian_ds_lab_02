@@ -15,7 +15,7 @@ public class PrintCommand implements Command {
 			sb.append(e.toString());
 			sb.append("\n");
 		}
-		// TODO Event toString implementieren
+
 		context.getOut().print(sb.toString());
 	}
 

@@ -207,9 +207,4 @@ public class AnalyticsServiceImpl implements AnalyticsService {
 		}
 	}
 
-	@Override
-	public void ping() {
-
-	}
-
 }

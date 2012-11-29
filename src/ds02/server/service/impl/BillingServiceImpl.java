@@ -34,9 +34,4 @@ public class BillingServiceImpl implements BillingService {
 		return BILLING_SERVICE_SECURE;
 	}
 
-	@Override
-	public void ping() {
-
-	}
-
 }
