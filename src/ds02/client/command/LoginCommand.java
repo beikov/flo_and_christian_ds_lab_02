@@ -34,7 +34,7 @@ public class LoginCommand implements Command {
 
 				System.out.println(username + " successfully logged in");
 			} else {
-				throw new RuntimeException("ERROR: Login failed");
+				System.err.println("ERROR: Login failed");
 			}
 		} catch (Exception e) {
 			LOG.error("Failed to get remote object", e);

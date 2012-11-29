@@ -65,7 +65,6 @@ public class ManagementClientMain implements Client {
 					cmd.execute(context, commandArgs);
 				} catch (Exception ex) {
 					System.err.println(ex.getMessage());
-					//ex.printStackTrace(System.err);
 				}
 			} else {
 				System.err.println("ERROR: Invalid command '" + commandKey + "'");

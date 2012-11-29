@@ -52,7 +52,8 @@ public class AnalyticsServiceImpl implements AnalyticsService {
 				new ConcurrentHashMap<String, EventCallback>());
 		eventMap.put("AUCTION_TIME_AVG",
 				new ConcurrentHashMap<String, EventCallback>());
-		eventMap.put("BID_WON", new ConcurrentHashMap<String, EventCallback>());
+		eventMap.put("BID_WON",
+				new ConcurrentHashMap<String, EventCallback>());
 		eventMap.put("BID_PLACED",
 				new ConcurrentHashMap<String, EventCallback>());
 		eventMap.put("BID_PRICE_MAX",
@@ -113,10 +114,6 @@ public class AnalyticsServiceImpl implements AnalyticsService {
 			public void handle(Event event) {
 				StatisticDataServiceImpl.INSTANCE
 						.incrementSuccessfulAuctionCount();
-
-				processEvent0(new AuctionSuccessRatioEvent(
-						StatisticDataServiceImpl.INSTANCE
-								.getAuctionSuccessRatio()));
 			}
 		});
 
@@ -195,6 +192,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
 			try {
 				eventCallback.handle(event);
 			} catch (Exception e) {
+				e.printStackTrace();
 				/* Remove the eventhandler as soon it is no longer available */
 				it.remove();
 			}

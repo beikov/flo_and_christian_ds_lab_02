@@ -8,18 +8,26 @@ import ds02.server.exception.PriceStepException;
 public class AddStepCommand implements Command {
 
 	private static final Logger LOG = Logger.getLogger("AddStepCommand");
-	
+
 	@Override
 	public void execute(UserContext context, String[] args) {
 		if (args.length != 4) {
 			throw new RuntimeException(
 					"Usage: !addStep <startPrice> <endPrice> <fixedPrice> <variablePricePercent>");
 		}
-
-		double startPrice = Double.parseDouble(args[0]);
-		double endPrice = Double.parseDouble(args[1]);
-		double fixedPrice = Double.parseDouble(args[2]);
-		double variablePricePercent = Double.parseDouble(args[3]);
+		double startPrice;
+		double endPrice;
+		double fixedPrice;
+		double variablePricePercent;
+		try {
+			startPrice = Double.parseDouble(args[0]);
+			endPrice = Double.parseDouble(args[1]);
+			fixedPrice = Double.parseDouble(args[2]);
+			variablePricePercent = Double.parseDouble(args[3]);
+		} catch (NumberFormatException e) {
+			System.err.println("ERROR: Parameters are expected as numbers");
+			return;
+		}
 
 		if (endPrice == 0 && endPrice < startPrice) {
 			endPrice = Double.POSITIVE_INFINITY;
