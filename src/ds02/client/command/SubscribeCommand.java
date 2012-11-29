@@ -13,7 +13,7 @@ public class SubscribeCommand implements Command {
 	@Override
 	public void execute(final UserContext context, String[] args) {
 		if (args.length != 1) {
-			throw new RuntimeException("Dummkopf!");
+			throw new RuntimeException("Usage: !subscribe <filterRegex>");
 		}
 
 		EventCallback ec = RegistryUtils.exportObject(new EventCallback() {
@@ -25,8 +25,10 @@ public class SubscribeCommand implements Command {
 		});
 
 		try {
-			ServiceLocator.INSTANCE.getAnalyticsService()
-					.subscribe(args[0], ec);
+			String subscriptionID = ServiceLocator.INSTANCE
+					.getAnalyticsService().subscribe(args[0], ec);
+			System.out.println("Created subscription with ID " + subscriptionID
+					+ " for events using filter '" + args[0] + "'");
 		} catch (RemoteException e) {
 		}
 	}

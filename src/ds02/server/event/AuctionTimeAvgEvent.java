@@ -9,7 +9,8 @@ public class AuctionTimeAvgEvent extends StatisticsEvent {
 
 	@Override
 	public String toString() {
-		return super.toString() + "the average auction time is " + getValue();
+		return super.toString() + "the average auction time is " + getValue()
+				/ 1000 + " seconds";
 	}
 
 }

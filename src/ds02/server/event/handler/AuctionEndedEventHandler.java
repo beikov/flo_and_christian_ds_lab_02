@@ -13,8 +13,9 @@ import ds02.server.service.ServiceLocator;
 
 public class AuctionEndedEventHandler extends
 		AbstractEventHandler<AuctionEndedEvent> {
-	
-	private static final Logger LOG = Logger.getLogger(AuctionEndedEventHandler.class);
+
+	private static final Logger LOG = Logger
+			.getLogger(AuctionEndedEventHandler.class);
 
 	@Override
 	public void handle(AuctionEndedEvent event) {

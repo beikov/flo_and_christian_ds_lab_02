@@ -6,29 +6,27 @@ public interface StatisticsDataService {
 
 	public Date getServerStartTime();
 
-	public long getOverallSessionTime();
+	public long getTotalSessionTime();
 
-	public long getOverallAuctionTime();
+	public long getTotalAuctionTime();
 
 	public long getTotalBidCount();
 
 	public double getBidCountPerMinute();
 
-	public long getLongestUserSessionTime();
+	public long getMaxUserSessionTime();
 
 	public long getMinUserSessionTime();
 
 	public double getAverageUserSessionTime();
 
-	public long getOverallNumberOfSuccessfullyFinishedAuctions();
+	public long getTotalSuccessfulAuctionCount();
 
-	public long getOverallNumberOfFinishedAuction();
-
-	public long getOverallTimeOfUserSessions();
+	public long getTotalAuctionCount();
 
 	public double getAuctionSuccessRatio();
 
-	public void addFinishedAuction(long auctionDuration);
+	public void addAuctionDuration(long auctionDuration);
 
 	public void addUserSessionTime(long sessionTime);
 
@@ -36,11 +34,11 @@ public interface StatisticsDataService {
 
 	public void incrementSessionCount();
 
-	public void addBid(double bidAmount);
+	public void offerHighestBid(double bidAmount);
 
-	public double getMaxBidPrice();
+	public double getHighestBid();
 
-	public void incrementSuccessfullAuctions();
+	public void incrementSuccessfulAuctionCount();
 
 	public double getAverageAuctionTime();
 

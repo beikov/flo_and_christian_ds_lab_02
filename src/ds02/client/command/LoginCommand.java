@@ -18,7 +18,7 @@ public class LoginCommand implements Command {
 		String password = null;
 
 		if (args.length != 2) {
-			throw new RuntimeException("You stink!");
+			throw new RuntimeException("Usage: !login <username> <password>");
 		}
 
 		username = args[0];
@@ -34,7 +34,7 @@ public class LoginCommand implements Command {
 
 				context.getOut().println(username + " successfully logged in");
 			} else {
-				context.getOut().println("Login failed");
+				System.err.println("ERROR: Login failed");
 			}
 		} catch (Exception e) {
 			LOG.error("Failed to get remote object", e);

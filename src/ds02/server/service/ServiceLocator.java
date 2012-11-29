@@ -55,9 +55,9 @@ public final class ServiceLocator {
 	private boolean notConnected(Pingable p) {
 		try {
 			p.ping();
-			return true;
-		} catch (RemoteException e) {
 			return false;
+		} catch (RemoteException e) {
+			return true;
 		}
 	}
 

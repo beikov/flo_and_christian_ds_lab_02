@@ -9,6 +9,6 @@ public class BidOverbidEvent extends BidEvent {
 
 	public String toString() {
 		return super.toString() + "current user for auction " + getAuctionId()
-				+ "was overbidded";
+				+ " was overbidded";
 	}
 }

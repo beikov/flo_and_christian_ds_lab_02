@@ -1,12 +1,13 @@
 package ds02.server.service.impl;
 
 import java.rmi.RemoteException;
-import java.util.Map;
+import java.util.NavigableSet;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ConcurrentNavigableMap;
-import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import ds02.server.exception.PriceStepException;
 import ds02.server.model.Bill;
 import ds02.server.model.BillLine;
 import ds02.server.model.PriceStep;
@@ -16,69 +17,96 @@ import ds02.server.service.BillingServiceSecure;
 public class BillingServiceSecureImpl implements BillingServiceSecure {
 
 	private static final long serialVersionUID = 1L;
-	private static final Object STUB = new Object();
 
-	private final ConcurrentNavigableMap<PriceStep, Object> priceSteps = new ConcurrentSkipListMap<PriceStep, Object>();
+	private final NavigableSet<PriceStep> priceSteps = new TreeSet<PriceStep>();
 	private final ConcurrentMap<String, Bill> bills = new ConcurrentHashMap<String, Bill>();
+	private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
 	@Override
 	public PriceSteps getPriceSetps() throws RemoteException {
-		return new PriceSteps(priceSteps.keySet());
+		lock.readLock().lock();
+
+		try {
+			return new PriceSteps(priceSteps);
+		} finally {
+			lock.readLock().unlock();
+		}
+
 	}
 
 	@Override
 	public void createPriceStep(double startPrice, double endPrice,
 			double fixedPrice, double variablePricePercent)
-			throws RemoteException {
+			throws RemoteException, PriceStepException {
 		if (startPrice < 0) {
-			throw new RemoteException("Start price may not be negative");
+			throw new PriceStepException("Start price may not be negative");
 		}
 		if (endPrice < 0) {
-			throw new RemoteException("End price may not be negative");
+			throw new PriceStepException("End price may not be negative");
 		}
 		if (fixedPrice < 0) {
-			throw new RemoteException("Fixed price may not be negative");
+			throw new PriceStepException("Fixed price may not be negative");
 		}
 		if (variablePricePercent < 0) {
-			throw new RemoteException(
+			throw new PriceStepException(
 					"Variable price percent may not be negative");
 		}
 		if (startPrice > endPrice) {
-			throw new RemoteException(
+			throw new PriceStepException(
 					"Start price must be lower than end price");
 		}
 
 		final PriceStep step = new PriceStep(startPrice, endPrice, fixedPrice,
 				variablePricePercent);
 
+		lock.writeLock().lock();
+
 		try {
-			/* The compare method will take care of checking for overlapping */
-			priceSteps.put(step, STUB);
+			final PriceStep lower = priceSteps.lower(step);
+			final PriceStep higher = priceSteps.higher(step);
+
+			if (lower != null && lower.getEndPrice() > step.getStartPrice()) {
+				throw new PriceStepException("Overlapping price steps");
+			}
+			if (higher != null && higher.getStartPrice() < step.getEndPrice()) {
+				throw new PriceStepException("Overlapping price steps");
+			}
+
+			priceSteps.add(step);
 		} catch (IllegalArgumentException ex) {
 			throw new RemoteException(ex.getMessage());
+
+		} finally {
+			lock.writeLock().unlock();
 		}
 	}
 
 	@Override
 	public void deletePriceStep(double startPrice, double endPrice)
-			throws RemoteException {
+			throws RemoteException, PriceStepException {
 		if (startPrice < 0) {
-			throw new RemoteException("Start price may not be negative");
+			throw new PriceStepException("Start price may not be negative");
 		}
 		if (endPrice < 0) {
-			throw new RemoteException("End price may not be negative");
+			throw new PriceStepException("End price may not be negative");
 		}
 		if (startPrice > endPrice) {
-			throw new RemoteException(
+			throw new PriceStepException(
 					"Start price must be lower than end price");
 		}
 
 		final PriceStep step = new PriceStep(startPrice, endPrice, 0, 0);
 
-		if (priceSteps.remove(step) == null) {
-			throw new RemoteException(
-					"The specified interval does not match an existing price step interval");
+		lock.writeLock().lock();
+		try {
+			if (!priceSteps.remove(step)) {
+				throw new PriceStepException(
+						"The specified interval does not match an existing price step interval");
+			}
+		} finally {
+			lock.writeLock().unlock();
 		}
+
 	}
 
 	@Override
@@ -91,20 +119,30 @@ public class BillingServiceSecureImpl implements BillingServiceSecure {
 			throw new RemoteException("Price may not be negative");
 		}
 
-		final Map.Entry<PriceStep, Object> priceStepEntry = priceSteps
-				.lowerEntry(new PriceStep(price, price, 0, 0));
+		final PriceStep step;
 
-		if (priceStepEntry == null) {
-			return;
+		lock.readLock().lock();
+
+		try {
+			step = priceSteps.floor(new PriceStep(price, price, 0, 0));
+		} finally {
+			lock.readLock().unlock();
 		}
 
-		final PriceStep step = priceStepEntry.getKey();
-		final BillLine line = new BillLine(auctionId, price,
-				step.getFixedPrice(), step.getVariablePricePercent() * price);
+		final BillLine line;
+
+		if (step == null) {
+			line = new BillLine(auctionId, price, 0, 0);
+		} else {
+			line = new BillLine(auctionId, price, step.getFixedPrice(),
+					(step.getVariablePricePercent() / 100.0) * price);
+		}
+
 		Bill bill = bills.get(user);
 
 		if (bill == null) {
-			final Bill tempBill = bills.putIfAbsent(user, new Bill());
+			bill = new Bill();
+			final Bill tempBill = bills.putIfAbsent(user, bill);
 
 			if (tempBill != null) {
 				bill = tempBill;

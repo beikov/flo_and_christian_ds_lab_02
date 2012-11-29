@@ -1,0 +1,26 @@
+======== Testscenario I ========
+
+=== Machine Specs ===
+
+OS: Mac OS X 10.8.2 (64 bit)
+Processor: 2 Ghz Intel Core i7 (with HT)
+Memory: 4GB 1333 MHz DDR3
+HDD: 256 GB SSD Agility 4
+
+
+=== Results ===
+
+
+
+
+======== Testscenario II ========
+
+=== Machine Specs ===
+
+OS: Ubuntu Server 12.10 (64 bit)
+Processor: 2 Ghz Intel Core i7 (with HT)
+Memory: 4GB 1333 MHz DDR3
+HDD: 256 GB SSD Agility 4
+
+
+=== Results ===

@@ -9,23 +9,23 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public final class RuntimeUtils {
 
 	private static final Queue<Runnable> SHUTDOWN_HOOKS = new ConcurrentLinkedQueue<Runnable>();
-	
-	static{
-		Runtime.getRuntime().addShutdownHook(new Thread(){
+
+	static {
+		Runtime.getRuntime().addShutdownHook(new Thread() {
 
 			@Override
 			public void run() {
 				invokeShutdownHooks();
 			}
-			
+
 		});
 	}
 
 	private RuntimeUtils() {
 
 	}
-	
-	public static void invokeShutdownHooks(){
+
+	public static void invokeShutdownHooks() {
 		Iterator<Runnable> it = SHUTDOWN_HOOKS.iterator();
 
 		while (it.hasNext()) {

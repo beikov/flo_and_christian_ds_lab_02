@@ -8,15 +8,18 @@ import ds02.server.util.concurrent.AtomicDouble;
 
 public class StatisticDataServiceImpl implements StatisticsDataService {
 	private final Date startTime;
+
 	private final AtomicLong totalSessionTime = new AtomicLong();
 	private final AtomicLong totalSessionCount = new AtomicLong();
+	private final AtomicLong minUserSessionTime = new AtomicLong();
+	private final AtomicLong maxUserSessionTime = new AtomicLong();
+
 	private final AtomicLong totalAuctionTime = new AtomicLong();
-	private final AtomicLong totalSuccessfullAuctions = new AtomicLong();
+	private final AtomicLong totalSuccessfulAuctionCount = new AtomicLong();
 	private final AtomicLong totalAuctionCount = new AtomicLong();
+
 	private final AtomicLong totalBidCount = new AtomicLong();
 	private final AtomicDouble highestBid = new AtomicDouble();
-	private final AtomicLong minUserTime = new AtomicLong();
-	private final AtomicLong maxUserTime = new AtomicLong();
 
 	public static StatisticDataServiceImpl INSTANCE = new StatisticDataServiceImpl();
 
@@ -30,17 +33,17 @@ public class StatisticDataServiceImpl implements StatisticsDataService {
 	}
 
 	@Override
-	public long getOverallSessionTime() {
+	public long getTotalSessionTime() {
 		return totalSessionTime.get();
 	}
 
 	@Override
-	public long getOverallAuctionTime() {
+	public long getTotalAuctionTime() {
 		return totalAuctionTime.get();
 	}
 
 	@Override
-	public double getMaxBidPrice() {
+	public double getHighestBid() {
 		return highestBid.get();
 	}
 
@@ -56,13 +59,13 @@ public class StatisticDataServiceImpl implements StatisticsDataService {
 	}
 
 	@Override
-	public long getLongestUserSessionTime() {
-		return maxUserTime.get();
+	public long getMaxUserSessionTime() {
+		return maxUserSessionTime.get();
 	}
 
 	@Override
 	public long getMinUserSessionTime() {
-		return minUserTime.get();
+		return minUserSessionTime.get();
 	}
 
 	@Override
@@ -72,23 +75,23 @@ public class StatisticDataServiceImpl implements StatisticsDataService {
 	}
 
 	@Override
-	public long getOverallNumberOfSuccessfullyFinishedAuctions() {
-		return totalSuccessfullAuctions.get();
+	public long getTotalSuccessfulAuctionCount() {
+		return totalSuccessfulAuctionCount.get();
 	}
 
 	@Override
 	public double getAuctionSuccessRatio() {
-		return ((double) totalSuccessfullAuctions.get() / (double) totalAuctionCount
+		return ((double) totalSuccessfulAuctionCount.get() / (double) totalAuctionCount
 				.get());
 	}
 
 	@Override
-	public long getOverallNumberOfFinishedAuction() {
+	public long getTotalAuctionCount() {
 		return totalAuctionCount.get();
 	}
 
 	@Override
-	public void addBid(double bidAmount) {
+	public void offerHighestBid(double bidAmount) {
 		while (true) {
 			double maxBid = highestBid.get();
 			if (bidAmount > maxBid) {
@@ -103,24 +106,19 @@ public class StatisticDataServiceImpl implements StatisticsDataService {
 	}
 
 	@Override
-	public long getOverallTimeOfUserSessions() {
-		return totalSessionTime.get();
-	}
-
-	@Override
 	public double getAverageAuctionTime() {
 		return ((double) totalAuctionTime.get() / (double) totalAuctionCount
 				.get());
 	}
 
 	@Override
-	public void addFinishedAuction(long auctionDuration) {
+	public void addAuctionDuration(long auctionDuration) {
 		totalAuctionTime.addAndGet(auctionDuration);
 	}
 
 	@Override
-	public void incrementSuccessfullAuctions() {
-		totalSuccessfullAuctions.incrementAndGet();
+	public void incrementSuccessfulAuctionCount() {
+		totalSuccessfulAuctionCount.incrementAndGet();
 	}
 
 	@Override
@@ -132,9 +130,9 @@ public class StatisticDataServiceImpl implements StatisticsDataService {
 	public void addUserSessionTime(long sessionTime) {
 		// lock free :-)
 		while (true) {
-			long minUTime = minUserTime.get();
+			long minUTime = minUserSessionTime.get();
 			if (sessionTime < minUTime) {
-				if (minUserTime.compareAndSet(minUTime, sessionTime)) {
+				if (minUserSessionTime.compareAndSet(minUTime, sessionTime)) {
 					break;
 				}
 
@@ -143,9 +141,9 @@ public class StatisticDataServiceImpl implements StatisticsDataService {
 			}
 		}
 		while (true) {
-			long maxUTime = maxUserTime.get();
+			long maxUTime = maxUserSessionTime.get();
 			if (sessionTime > maxUTime) {
-				if (maxUserTime.compareAndSet(maxUTime, sessionTime)) {
+				if (maxUserSessionTime.compareAndSet(maxUTime, sessionTime)) {
 					break;
 				}
 
