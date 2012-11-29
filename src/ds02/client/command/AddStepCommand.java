@@ -21,7 +21,7 @@ public class AddStepCommand implements Command {
 		try {
 			context.getBillingServiceSecure().createPriceStep(startPrice,
 					endPrice, fixedPrice, variablePricePercent);
-			System.out.println("Step ["
+			context.getOut().println("Step ["
 					+ startPrice
 					+ " "
 					+ (endPrice == Double.POSITIVE_INFINITY ? "INFINITY"

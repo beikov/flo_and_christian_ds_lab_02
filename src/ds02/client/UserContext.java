@@ -1,5 +1,6 @@
 package ds02.client;
 
+import java.io.PrintStream;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -9,11 +10,16 @@ import ds02.server.service.BillingServiceSecure;
 
 public class UserContext {
 
-	private String username = null;
-	private Set<String> subscriptions = new HashSet<String>();
-	private boolean auto;
+	private final PrintStream out;
+	private final Set<String> subscriptions = new HashSet<String>();
 	private Set<Event> eventSet = new LinkedHashSet<Event>();
 	private BillingServiceSecure billingServiceSecure;
+	private String username = null;
+	private boolean auto;
+
+	public UserContext(PrintStream out) {
+		this.out = out;
+	}
 
 	public void login(String username, BillingServiceSecure billingServiceSecure) {
 		this.username = username;
@@ -49,7 +55,7 @@ public class UserContext {
 		if (!isAuto()) {
 			eventSet.add(event);
 		} else {
-			System.out.println(event.toString());
+			out.println(event.toString());
 		}
 	}
 
@@ -65,6 +71,10 @@ public class UserContext {
 
 	public BillingServiceSecure getBillingServiceSecure() {
 		return billingServiceSecure;
+	}
+	
+	public PrintStream getOut(){
+		return out;
 	}
 
 }

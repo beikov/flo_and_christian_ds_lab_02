@@ -3,6 +3,7 @@ package ds02.server;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 
 import ds02.server.event.DisconnectedEvent;
@@ -10,14 +11,14 @@ import ds02.server.event.EventBus;
 import ds02.server.event.EventHandler;
 import ds02.server.event.LogoutEvent;
 import ds02.server.event.handler.DefaultEventHandler;
+import ds02.server.util.AuctionProtocolStream;
 
 public class UserConnection {
 
 	private final EventBus<DisconnectedEvent> onClose;
 	private final EventBus<LogoutEvent> onLogout;
 	private final Socket tcpSocket;
-	private final BufferedReader tcpReader;
-	private final ObjectOutputStream tcpWriter;
+	private final AuctionProtocolStream protocolStream;
 	private String username;
 
 	public UserConnection(Socket tcpSocket) {
@@ -26,37 +27,18 @@ public class UserConnection {
 		this.tcpSocket = tcpSocket;
 
 		try {
-			tcpReader = new BufferedReader(new InputStreamReader(
-					tcpSocket.getInputStream()));
-			tcpWriter = new ObjectOutputStream(tcpSocket.getOutputStream());
+			this.protocolStream = new AuctionProtocolStream(tcpSocket.getOutputStream(), tcpSocket.getInputStream());
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
 	}
 
 	public void writeResponse(String response) {
-		try {
-			tcpWriter.writeObject(response);
-			tcpWriter.flush();
-		} catch (Exception ex) {
-			// Don't care about the errors since logging is not required
-			// if(!tcpSocket.isClosed()){
-			// ex.printStackTrace(System.err);
-			// }
-		}
+		protocolStream.write(response);
 	}
 
 	public String readRequest() {
-		try {
-			return tcpReader.readLine();
-		} catch (Exception ex) {
-			// Don't care about the errors since logging is not required
-			// if(!tcpSocket.isClosed()){
-			// ex.printStackTrace(System.err);
-			// }
-
-			return null;
-		}
+		return protocolStream.read();
 	}
 
 	public String getUsername() {

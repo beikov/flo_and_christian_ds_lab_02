@@ -3,6 +3,7 @@ package ds02.client;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,14 +25,17 @@ import ds02.server.util.RuntimeUtils;
 public class ManagementClientMain implements Client {
 
 	private static final String[] NO_ARGS = new String[0];
-	private final UserContext context = new UserContext();
-	private Map<String, Command> loggedInCommandMap = new HashMap<String, Command>();
-	private Map<String, Command> loggedOutCommandMap = new HashMap<String, Command>();
+	private final Map<String, Command> loggedInCommandMap = new HashMap<String, Command>();
+	private final Map<String, Command> loggedOutCommandMap = new HashMap<String, Command>();
+	private final UserContext context;
 
 	private final BufferedReader in;
+	private final PrintStream out;
 
-	public ManagementClientMain(BufferedReader in) {
+	public ManagementClientMain(BufferedReader in, PrintStream out) {
 		this.in = in;
+		this.out = out;
+		this.context = new UserContext(out);
 		assembleCommands();
 	}
 
@@ -67,7 +71,7 @@ public class ManagementClientMain implements Client {
 					ex.printStackTrace(System.err);
 				}
 			} else {
-				System.err.println("Invalid command '" + commandKey + "'");
+				out.println("Invalid command '" + commandKey + "'");
 			}
 		}
 		
@@ -84,8 +88,8 @@ public class ManagementClientMain implements Client {
 
 		sb.append("> ");
 
-		System.out.print(sb.toString());
-		System.out.flush();
+		out.print(sb.toString());
+		out.flush();
 
 		try {
 			return in.readLine();
@@ -123,7 +127,7 @@ public class ManagementClientMain implements Client {
 
 		ServiceLocator.init(args[0], args[1]);
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-		new ManagementClientMain(in).run();
+		new ManagementClientMain(in, System.out).run();
 	}
 
 	private static void usage() {

@@ -15,14 +15,14 @@ public class BillCommand implements Command {
 		}
 		try {
 			Bill bill = context.getBillingServiceSecure().getBill(args[0]);
-			System.out
+			context.getOut()
 					.println("auction_ID strike_price fee_fixed fee_variable fee_total");
 			for (BillLine billLine : bill.getBillLines()) {
-				System.out.format("%.0d %.0f %.0f %.1f %.1f",
+				context.getOut().format("%.0d %.0f %.0f %.1f %.1f",
 						billLine.getAuctionId(), billLine.getStrikePrice(),
 						billLine.getFeeFixed(), billLine.getFeeVariable(),
 						billLine.getFeeTotal());
-				System.out.println("%");
+				context.getOut().println("%");
 			}
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block

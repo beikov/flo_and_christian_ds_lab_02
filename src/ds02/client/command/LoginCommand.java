@@ -25,16 +25,16 @@ public class LoginCommand implements Command {
 		password = args[1];
 		try {
 			if (context.isLoggedIn()) {
-				System.out.println("ERROR: You are currently not logged in.");
+				context.getOut().println("ERROR: You are currently not logged in.");
 
 			} else if ((billingServiceSecure = RegistryUtils.getRemote(
 					BillingService.class).login(username, password)) != null) {
 
 				context.login(username, billingServiceSecure);
 
-				System.out.println(username + " successfully logged in");
+				context.getOut().println(username + " successfully logged in");
 			} else {
-				System.out.println("Login failed");
+				context.getOut().println("Login failed");
 			}
 		} catch (Exception e) {
 			LOG.error("Failed to get remote object", e);

@@ -20,7 +20,7 @@ public class RemoveStepCommand implements Command {
 			context.getBillingServiceSecure().deletePriceStep(startPrice,
 					endPrice);
 
-			System.out.println("Price step ["
+			context.getOut().println("Price step ["
 					+ startPrice
 					+ " "
 					+ (endPrice == Double.POSITIVE_INFINITY ? "INFINITY"
