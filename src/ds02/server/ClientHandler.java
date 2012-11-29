@@ -78,7 +78,7 @@ public class ClientHandler implements Runnable {
 				try {
 					cmd.execute(con, commandArgs);
 				} catch (Exception ex) {
-					con.writeResponse(ex.getMessage());
+					con.writeResponse(ex.getMessage() == null ? ex.toString() : ex.getMessage());
 				}
 			} else {
 				con.writeResponse("Invalid command '" + commandKey + "'");

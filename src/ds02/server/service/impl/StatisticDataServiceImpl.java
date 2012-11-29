@@ -54,7 +54,7 @@ public class StatisticDataServiceImpl implements StatisticsDataService {
 
 	@Override
 	public double getBidCountPerMinute() {
-		return (totalBidCount.get() / ((new Date().getTime() - startTime
+		return (totalBidCount.get() / ((double)(new Date().getTime() - startTime
 				.getTime()) / 60000));
 	}
 
